@@ -7,6 +7,7 @@ Globals(
     pixelsamples = (16,16),
     output = "$OUTFILE",
     displaymode = "rgba",
+    output_framebuffer = False,
     rib = 'Imager "background"  "string bgtexture" "$ENVMAP"'
 )
 
