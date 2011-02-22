@@ -81,7 +81,6 @@ for part in root.iterChilds():
     if part.geom is not None: 
         cogs.append(part.cog)
 cogs_mean = numpy.array(cogs).mean(0)
-print(cogs_mean)
 
 for part in root.iterChilds():
     if part.geom is not None: 

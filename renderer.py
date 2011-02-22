@@ -160,6 +160,8 @@ def render(out_dir,
                                 
             model_dir = os.path.abspath(os.path.join(MODEL_DIR,model_id))
             obj_file = os.path.abspath(os.path.join(model_dir,model_id + '.obj'))
+            mtl_path = os.path.abspath(os.path.join(model_dir,model_id + '.mtl'))   
+            mtl_fixer( mtl_path,model_id)  
                        
             pdict = {'OBJ':obj_file, 
                      'KENV' : p['kenv'], 
@@ -192,7 +194,12 @@ def render(out_dir,
         F.close()
     
         
-                
+def mtl_fixer(path,model_id):
+    F = open(path).read()
+    F = F.replace("C:\\My 3D Models\\" + model_id + "\\\\","")
+    f = open(path,'w')
+    f.write(F)
+    f.close()
     
 def get_model(model_id,bucket):
     tmpdir = tempfile.mkdtemp()
@@ -203,4 +210,5 @@ def get_model(model_id,bucket):
     path = os.path.join(tmpdir,'3dmodels',model_id)
     os.system('mv ' + path + ' ' + MODEL_DIR)
     os.system('rm -rf ' + tmpdir)        
-            
+          
+     
