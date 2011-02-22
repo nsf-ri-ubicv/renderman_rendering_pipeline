@@ -1,0 +1,12 @@
+
+#######################################
+## StarFlow Local Configuration File ##
+#######################################
+
+[local_systemwide]
+system_mode=EXPLORATORY
+protection=ON
+generated_code_dir=generated_code
+name=3dmodels
+gmail_account_name=dicarlocox
+gmail_account_passwd=xocolracid

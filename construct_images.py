@@ -43,3 +43,21 @@ def create_mongodb(depends_on = '../ModelBankLibrary.db', creates = '../certific
         
     
     createCertificate(creates,'made it')
+    
+def make_background_db( creates = '../background_certificate.txt'):
+
+    conn = pm.Connection()
+    db = conn['dicarlocox_3dmodels']
+    db.drop_collection('3d_spherical_backgrounds')   
+    
+    coll = db['3d_spherical_backgrounds']
+    
+    recs = [{'name': 'backlot', 'path':'backlot.tdl'},
+     {'name': 'apartment', 'path':'apartment.tdl'},
+     {'name': 'empty room', 'path':'empty_room.tdl'},
+     {'name': 'office', 'path':'office.tdl'}
+     ]
+     
+    for rec in recs:
+        coll.insert(rec)
+        
