@@ -1,6 +1,23 @@
-require(["jquery","jquery.address"], 
+require(["jquery","jquery.address","underscore"], 
 	function() {
 
+        var addToRenderList = function(e,state){
+     
+
+            var model_id = e.currentTarget.id;
+            var renderlist = state['toRender'];
+            if (renderlist === undefined){
+                renderlist = [];
+            }
+            if (!(_.include(renderlist,model_id))){
+               renderlist.push(model_id);             
+               $('#renderlist').append("<div>" + model_id + "</div>");
+               state['toRender'] = renderlist;
+               $.address.jsonhash(state);
+               $.address.update();
+            }
+        };
+        
 		var showfunc = function(params,state){
 		    var by = state["by"];
 		    var qval = {};
@@ -25,7 +42,11 @@ require(["jquery","jquery.address"],
 						
 						path = v['filepath']
 						model_id = v['id']
-						thing = $('<span><img src="http://dicarlocox-3dmodels-images.s3.amazonaws.com/' + path + '" height="200px"/>' + model_id + '</span>')
+		
+						thing = $('<span id=' + model_id + '><img src="http://dicarlocox-3dmodels-images.s3.amazonaws.com/' + path + '" height="200px"/>' + model_id + '</span>')
+						thing.click(function(e){ 
+						    addToRenderList(e,state);
+						});
 						$("#content").append(thing);
 
 
@@ -40,12 +61,13 @@ require(["jquery","jquery.address"],
 	    var choosefunc = function(params,state){
 	    
 	        var by = state["by"];
+	        console.log(by)
 	        if (by === undefined){
 	            by = "keywords";
 	            state["by"] = by;
-	            $.address.jsonhash(state);
 	        }
 	        
+	        $.address.jsonhash(state);
 	        $.address.update();
 			$.ajax({
 				url: "http://localhost:9999/models",
@@ -80,6 +102,30 @@ require(["jquery","jquery.address"],
 			state = state || {};
 			var params = $.address.parameters();
 	        var path = e.path;
+	        
+		    $("#chooseByTag").unbind();
+		    $("#chooseByTag").click(function(){
+		        state["by"] = "keywords";
+		        $.address.path("/choose");
+		        delete state["val"];
+		        choosefunc(params,state)
+		    });
+
+		    $("#chooseByName").unbind();
+		    $("#chooseByName").click(function(){
+		        state["by"] = "name";
+		        $.address.path("/choose");
+		        delete state["val"];
+		        choosefunc(params,state)
+		    });
+
+            $('#renderlist div').remove();
+	        var renderlist = state['toRender'];
+	        if (renderlist !== undefined){
+	            $.each(renderlist,function(i,v){
+	                $('#renderlist').append("<div>" + v + "</div>");
+	            });
+	        }
 	 
 	        if ((path === "/choose") || (path === "/")) {
 	            if (path === "/"){
