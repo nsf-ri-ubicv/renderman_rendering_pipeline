@@ -27,8 +27,6 @@ require(["jquery","jquery.address","underscore"],
 			$.address.path("/show");
 			$.address.jsonhash(state);
 			$.address.update();
-			
-			
 			$.ajax({
 				url: "http://localhost:9999/models",
 				dataType: 'jsonp',
@@ -61,7 +59,6 @@ require(["jquery","jquery.address","underscore"],
 	    var choosefunc = function(params,state){
 	    
 	        var by = state["by"];
-	        console.log(by)
 	        if (by === undefined){
 	            by = "keywords";
 	            state["by"] = by;

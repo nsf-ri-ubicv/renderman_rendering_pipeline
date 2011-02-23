@@ -750,7 +750,7 @@ define(["jquery"], function() {
 			  if(val === "") {
 				return null;
 			  }
-			  return JSON.parse(val);
+			  return JSON.parse(val.replace(/\+/g,' '));
 		  }
 	  };
   })();
