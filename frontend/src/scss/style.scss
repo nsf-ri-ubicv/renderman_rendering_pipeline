@@ -15,11 +15,57 @@ body {
   font-family: "liberation-serif-1", "liberation-serif-2";
 }
 
+#chooser{
+    padding-top:5px;
+    padding-bottom:5px;
+    background-color:gray;
+    position:fixed;
+    width:100%;
+   }
+
 #content{
+   padding:5px; 
+   padding-top:40px; 
    float:left;
-   position:abosolute;
-   width:700px;
+   width:950px;
 }
+
+
+.choose_item{
+   float:left;
+   padding:5px;
+   padding-right:10px;
+}
+
+#chooseByTag{
+   float:left;
+   padding-right:5px;
+   padding-left:5px;
+
+}
+
+#chooseByName{
+
+   padding-right:5px;
+   padding-left:5px;
+}
+
+#variables{
+   height:200px;
+}
+
+#renderlist{
+   background-color:yellow; 
+}
+
+#params{
+   padding:10px;
+   position:fixed;
+   width:200px;
+   top:100px;
+   outline:#00FF00 dotted thick;
+}
+
 
 #right{
    float:right;
@@ -49,7 +95,8 @@ body {
 }
 
 #main{
-   padding-top:50px;
+   width:1200px;
+   padding-top:45px;
 }
 
 #header {

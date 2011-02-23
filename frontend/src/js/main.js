@@ -75,7 +75,7 @@ require(["jquery","jquery.address","underscore"],
 					$("#content div,span").remove();
 					var thing;
 					$.each(data,function(ind,val){
-						thing = $("<div>" + val + "</div>");
+						thing = $('<div class="choose_item">' + val + "</div>");
 						thing.click(function(){
 						    state["val"] = val;
 							showfunc(params,state);
