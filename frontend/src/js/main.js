@@ -140,9 +140,10 @@ require(["jquery","jquery.address","underscore"],
                 var rXY = $("#rXY input").val();
                 var rXZ = $("#rXZ input").val();
                 var rYZ = $("#rYZ input").val();
+                var kenv = $("#kenv input").val();
                 
                 var renderliststring = JSON.stringify(renderlist);
-                var paramstring = '&tx=' + tX + '&ty=' + tY + '&tz=' + tZ + '&rxy=' + rXY + '&rxz=' + rXZ + '&ryz=' + rYZ;
+                var paramstring = '&tx=' + tX + '&ty=' + tY + '&tz=' + tZ + '&rxy=' + rXY + '&rxz=' + rXZ + '&ryz=' + rYZ + '&kenv=' + kenv;
                 
                               
                 location.href = "http://localhost:9999/render?model_id=" + renderliststring + paramstring;
