@@ -84,5 +84,6 @@ cogs_mean = numpy.array(cogs).mean(0)
 
 for part in root.iterChilds():
     if part.geom is not None: 
-        part.setOffsetTransform(mat4().translation(cogs_mean).rotate($RYZ,vec3(1,0,0)).rotate($RXZ,vec3(0,1,0)).rotate($RXY,vec3(0,0,1)).translate(vec3($TX,$TY,$TZ)))
+        #part.setOffsetTransform(mat4().translation(cogs_mean).rotate($RYZ,vec3(1,0,0)).rotate($RXZ,vec3(0,1,0)).rotate($RXY,vec3(0,0,1)).translate(vec3($TX,$TY,$TZ)))
+        part.setOffsetTransform(mat4().rotation($RYZ,vec3(1,0,0)).rotate($RXZ,vec3(0,1,0)).rotate($RXY,vec3(0,0,1)).translate(vec3($TX,$TY,$TZ)))
         part.transform = mat4().rotation(phi,vec3(0,0,1)).rotate(-psi,vec3(0,1,0))

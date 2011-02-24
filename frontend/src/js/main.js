@@ -134,7 +134,19 @@ require(["jquery","jquery.address","underscore"],
 
             $("#render_it").unbind();
             $("#render_it").click(function(){
-                console.log("HERE")
+                var tX = $("#tX input").val();
+                var tY = $("#tY input").val();
+                var tZ = $("#tZ input").val();
+                var rXY = $("#rXY input").val();
+                var rXZ = $("#rXZ input").val();
+                var rYZ = $("#rYZ input").val();
+                
+                var renderliststring = JSON.stringify(renderlist);
+                var paramstring = '&tx=' + tX + '&ty=' + tY + '&tz=' + tZ + '&rxy=' + rXY + '&rxz=' + rXZ + '&ryz=' + rYZ;
+                
+                              
+                location.href = "http://localhost:9999/render?model_id=" + renderliststring + paramstring;
+
             });
 
 	        if ((path === "/choose") || (path === "/")) {
