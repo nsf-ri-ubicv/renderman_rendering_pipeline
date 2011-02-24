@@ -1,20 +1,23 @@
 require(["jquery","jquery.address","underscore"], 
+    
 	function() {
 
-        var addToRenderList = function(e,state){
+        var renderlist = [];
+        var addToRenderList = function(o){
      
+            var model_id = o.id;
+            var model_name = $(o).attr("name");
 
-            var model_id = e.currentTarget.id;
-            var renderlist = state['toRender'];
-            if (renderlist === undefined){
-                renderlist = [];
-            }
             if (!(_.include(renderlist,model_id))){
-               renderlist.push(model_id);             
-               $('#renderlist').append("<div>" + model_id + "</div>");
-               state['toRender'] = renderlist;
-               $.address.jsonhash(state);
-               $.address.update();
+               renderlist.push(model_id);         
+               var obj = $('<div class="selected_model_box" id="' + model_id + '"><div class="selected_model_id">' + model_id + '<span class="remover"> (remove)</span></div><div class="selected_model_name">' + model_name + '</div></div>');
+               $('#renderlist').append(obj);
+               obj.find(".remover").click(function(f){
+
+                   obj.remove();
+                   renderlist = _.without(renderlist,model_id);
+               });
+  
             }
         };
         
@@ -27,23 +30,36 @@ require(["jquery","jquery.address","underscore"],
 			$.address.path("/show");
 			$.address.jsonhash(state);
 			$.address.update();
+
+            $("#content div, #content span").remove(); 
+		    if (by === "keywords"){
+		        var choose_all = $("<div>Select All</div>");
+		        choose_all.click(function(){
+		            $('#content').find(".model_box").each(function(ind,o){
+		               addToRenderList(o);  
+		            });
+		        });
+		        $('#content').append(choose_all);
+		    }
+		    
 			$.ajax({
 				url: "http://localhost:9999/models",
 				dataType: 'jsonp',
 				data:params,
 				traditional:true,
 				success: function(data) {
-					$("#content div,span").remove();
-					var path, thing, model_id;
+					
+					var path, thing, model_id,model_name;
 
 					$.each(data,function(i,v){
 						
-						path = v['filepath']
-						model_id = v['id']
+						path = v['filepath'];
+						model_id = v['id'];
+						model_name = v['name'];
 		
-						thing = $('<span id=' + model_id + '><img src="http://dicarlocox-3dmodels-images.s3.amazonaws.com/' + path + '" height="200px"/>' + model_id + '</span>')
+						thing = $('<div class="model_box" id="' + model_id + '" name="' + model_name + '"><div class="model_box_img"><img src="http://dicarlocox-3dmodels-images.s3.amazonaws.com/' + path + '" height="200px"/></div><div class="model_box_id">' + model_id + '</div><div class="model_box_name">' + model_name + '</div></span>')
 						thing.click(function(e){ 
-						    addToRenderList(e,state);
+						    addToRenderList(e.currentTarget);
 						});
 						$("#content").append(thing);
 
@@ -72,7 +88,7 @@ require(["jquery","jquery.address","underscore"],
 				data: {action:"distinct",field:by},
 				traditional:true,
 				success: function(data) {
-					$("#content div,span").remove();
+					$("#content div, #content span").remove();
 					var thing;
 					$.each(data,function(ind,val){
 						thing = $('<div class="choose_item">' + val + "</div>");
@@ -116,14 +132,11 @@ require(["jquery","jquery.address","underscore"],
 		        choosefunc(params,state)
 		    });
 
-            $('#renderlist div').remove();
-	        var renderlist = state['toRender'];
-	        if (renderlist !== undefined){
-	            $.each(renderlist,function(i,v){
-	                $('#renderlist').append("<div>" + v + "</div>");
-	            });
-	        }
-	 
+            $("#render_it").unbind();
+            $("#render_it").click(function(){
+                console.log("HERE")
+            });
+
 	        if ((path === "/choose") || (path === "/")) {
 	            if (path === "/"){
     	            $.address.path("/choose");

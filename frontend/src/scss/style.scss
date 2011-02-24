@@ -27,9 +27,22 @@ body {
    padding:5px; 
    padding-top:40px; 
    float:left;
-   width:950px;
+   width:850px;
 }
 
+.var_box{
+   padding:3px;
+
+}
+
+.selected_model_box{
+    padding-bottom:10px;
+}
+
+.model_box{
+float:left;
+padding:10px;
+}
 
 .choose_item{
    float:left;
@@ -51,9 +64,9 @@ body {
 }
 
 
-#renderlist{
+/*#renderlist{
    background-color:yellow; 
-}
+}*/
 
 #params{
    padding:10px;
@@ -92,7 +105,7 @@ body {
 }
 
 #main{
-   width:1200px;
+   width:1100px;
    padding-top:45px;
 }
 
