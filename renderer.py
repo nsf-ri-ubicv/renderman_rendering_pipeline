@@ -57,6 +57,7 @@ def render(out_dir,
            bg_id = None, 
            bg_angle = None,
            kenv = 1,
+           callback = None
            ):
 
     if isinstance(model_id,str):
@@ -193,6 +194,8 @@ def render(out_dir,
         cPickle.dump(p,F)
         F.close()
     
+    if callback:
+        callback()
         
 def mtl_fixer(path,model_id):
     F = open(path).read()

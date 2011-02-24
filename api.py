@@ -110,9 +110,9 @@ class mongodb_handler(tornado.web.RequestHandler):
     
 class model_handler(mongodb_handler):
     
-	CONN = pm.Connection()
-	DB = CONN['dicarlocox_3dmodels']
-	COLL = DB['3ds_test_images']  
+    CONN = pm.Connection()
+    DB = CONN['dicarlocox_3dmodels']
+    COLL = DB['3ds_test_images']  
         
         
 class background_handler(tornado.web.RequestHandler):
@@ -125,6 +125,7 @@ class background_handler(tornado.web.RequestHandler):
 
 class render_handler(tornado.web.RequestHandler):
 
+    @tornado.web.asynchronous
     def get(self):
         args = self.request.arguments
         for k in args.keys():
@@ -136,11 +137,15 @@ class render_handler(tornado.web.RequestHandler):
             
         model_id = args.pop('model_id')
 
-        temp_dir = tempfile.mkdtemp()
-        temp_cdir, temp_idir = os.path.split(temp_dir)
+        self.temp_dir = tempfile.mkdtemp()
         
-        render(temp_dir,model_id,**args)
-       
+        render(self.temp_dir,model_id,callback=self.callback,**args)
+
+
+    def callback(self):
+     
+        temp_dir = self.temp_dir
+        temp_cdir, temp_idir = os.path.split(temp_dir)
         os.system('cd ' + temp_cdir + '; tar -czvf ' + temp_idir + '.tar.gz ' + temp_idir)
         
         self.set_header("Content-Encoding", "gzip")
@@ -149,6 +154,8 @@ class render_handler(tornado.web.RequestHandler):
         self.write(open(outfile).read())
         
         os.system('rm -rf ' + temp_dir)
+        
+        self.finish()
 
     
 if __name__ == "__main__":

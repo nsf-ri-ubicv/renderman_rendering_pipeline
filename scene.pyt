@@ -33,7 +33,7 @@ TargetCamera(
     fov = 90.,
 )
 
-S = RMShader("envlight",params={"float samples":32,"string envmap":"$ENVMAP","float Kenv":$KENV,"float Kocc":0})
+S = RMShader("envlight2",params={"float samples":32,"string envmap":"$ENVMAP","float Kenv":$KENV,"float Kocc":0})
 RMLightSource(shader=S)
 
 load("$OBJ")
