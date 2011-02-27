@@ -23,11 +23,14 @@ body {
     width:100%;
    }
 
+#outer{
+   padding-top:45px;
+}
+
 #content{
-   padding:5px; 
-   padding-top:40px; 
+
    float:left;
-   width:850px;
+   width:900px;
 }
 
 .var_box{
@@ -40,7 +43,8 @@ body {
 }
 
 .selected_model_box{
-    padding-bottom:10px;
+    padding-top:5px;
+    padding-bottom:5px;
 }
 
 .model_box{
@@ -67,24 +71,22 @@ padding:10px;
    padding-left:5px;
 }
 
-
-/*#renderlist{
-   background-color:yellow; 
-}*/
-
 #params{
    padding:10px;
-   position:fixed;
+    
+/*   position:fixed;
    width:200px;
    top:100px;
+   right:150px; */
    outline:#00FF00 dotted thick;
 }
 
 
 #right{
+   padding-top:5px;
    float:right;
    width:200px;
-   position:abosolute;
+
 }
 
 #searchbar {
@@ -109,7 +111,7 @@ padding:10px;
 }
 
 #main{
-   width:1100px;
+   width:1150px;
    padding-top:45px;
 }
 
@@ -123,13 +125,13 @@ padding:10px;
 	top: 0px;
 }
 
-#inner_variables{
+.variables{
    border-width:thin;
    border-style:solid;
-   height:215px;
+   height:175px;
 }
 
-#variables{
+.selected_model{
    padding-bottom:10px;
 }
 

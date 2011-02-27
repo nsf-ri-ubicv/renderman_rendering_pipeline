@@ -1,24 +1,49 @@
 require(["jquery","jquery.address","underscore"], 
     
+    
+    
 	function() {
 
-        var renderlist = [];
+
+        var var_box_func = function(model_id,model_name){
+        
+			var cont = $('<div class="selected_model" name="' + model_id + '"></div>');
+			var inner_cont = $('<div class="variables"></div>');
+			var tx_box = $('<div class="var_box tx">tx = <input type="text"></input></div>');
+			var ty_box = $('<div class="var_box ty">ty = <input type="text"></input></div>');
+			var tz_box = $('<div class="var_box tz">tz = <input type="text"></input></div>');
+			var rxy_box = $('<div class="var_box rxy">rxy = <input type="text"></input></div>');
+			var rxz_box = $('<div class="var_box rxz">rxz = <input type="text"></input></div>');
+			var ryz_box = $('<div class="var_box ryz">ryz = <input type="text"></input></div>');
+			
+			var selected = $('<div class="selected_model_box"><div class="selected_model_id">' + model_id + '<span class="remover"> (remove)</span></div><div class="selected_model_name">' + model_name + '</div></div>');
+			
+			inner_cont.append(tx_box);
+			inner_cont.append(ty_box);
+			inner_cont.append(tz_box);
+			inner_cont.append(rxy_box);
+			inner_cont.append(rxz_box);
+			inner_cont.append(ryz_box);
+			
+			cont.append(inner_cont);
+			cont.append(selected)
+			
+			return cont
+        
+        };
+        
         var addToRenderList = function(o){
      
-            var model_id = o.id;
-            var model_name = $(o).attr("name");
+           var model_id = o.id;
+           var model_name = $(o).attr("name");
 
-            if (!(_.include(renderlist,model_id))){
-               renderlist.push(model_id);         
-               var obj = $('<div class="selected_model_box" id="' + model_id + '"><div class="selected_model_id">' + model_id + '<span class="remover"> (remove)</span></div><div class="selected_model_name">' + model_name + '</div></div>');
-               $('#renderlist').append(obj);
-               obj.find(".remover").click(function(f){
-
-                   obj.remove();
-                   renderlist = _.without(renderlist,model_id);
-               });
+  		   var obj = var_box_func(model_id,model_name)
+		   $('#renderlist').append(obj);
+		   obj.find(".remover").click(function(f){
+			   obj.remove();
+		   });
   
-            }
+ 
         };
         
 		var showfunc = function(params,state){
@@ -33,7 +58,7 @@ require(["jquery","jquery.address","underscore"],
 
             $("#content div, #content span").remove(); 
 		    if (by === "keywords"){
-		        var choose_all = $("<div>Select All</div>");
+		        var choose_all = $('<div id="select_all"><button>Select All</button></div>');
 		        choose_all.click(function(){
 		            $('#content').find(".model_box").each(function(ind,o){
 		               addToRenderList(o);  
@@ -134,20 +159,54 @@ require(["jquery","jquery.address","underscore"],
 
             $("#render_it").unbind();
             $("#render_it").click(function(){
-                var tX = $("#tX input").val();
-                var tY = $("#tY input").val();
-                var tZ = $("#tZ input").val();
-                var rXY = $("#rXY input").val();
-                var rXZ = $("#rXZ input").val();
-                var rYZ = $("#rYZ input").val();
+            
+                var model_params = [];
+                var params;
+                
+                $.each($("#renderlist .selected_model"), function(ind,obj){
+                    obj = $(obj);
+                    params = {};
+                    params['model_id'] = obj.attr("name");
+                    tx = obj.find(".tx input").val();      
+                    if (tx !== ''){
+                        params['tx'] = parseFloat(tx);
+                    }
+                    ty = obj.find(".ty input").val();      
+                    if (ty !== ''){
+                        params['ty'] = parseFloat(ty);
+                    }                   
+                    tz = obj.find(".tz input").val();      
+                    if (tz !== ''){
+                        params['tz'] = parseFloat(tz);
+                    }   
+                    rxy = obj.find(".rxy input").val();      
+                    if (rxy !== ''){
+                        params['rxy'] = parseFloat(rxy);
+                    }                       
+                    rxz = obj.find(".rxz input").val();      
+                    if (rxz !== ''){
+                        params['rxz'] = parseFloat(rxz);
+                    }
+                    ryz = obj.find(".ryz input").val();      
+                    if (ryz !== ''){
+                        params['ryz'] = parseFloat(ryz);
+                    }                    
+                    model_params.push(params);
+                });
+                
+                params = {'model_params':model_params};
+                
                 var kenv = $("#kenv input").val();
+                if (kenv !== ""){
+                    params["kenv"] = parseFloat(kenv);
+                }
                 
-                var renderliststring = JSON.stringify(renderlist);
-                var paramstring = '&tx=' + tX + '&ty=' + tY + '&tz=' + tZ + '&rxy=' + rXY + '&rxz=' + rXZ + '&ryz=' + rYZ + '&kenv=' + kenv;
+                                
+                var params_list = [params];
+                var params_string = JSON.stringify(params_list);
+                //console.log(params_string)
+                location.href = "http://localhost:9999/render?params_list=" + params_string;
                 
-                              
-                location.href = "http://localhost:9999/render?model_id=" + renderliststring + paramstring;
-
             });
 
 	        if ((path === "/choose") || (path === "/")) {

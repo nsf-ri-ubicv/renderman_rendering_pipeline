@@ -135,11 +135,11 @@ class render_handler(tornado.web.RequestHandler):
             except:
                 pass
             
-        model_id = args.pop('model_id')
+        params_list = args.pop('params_list')
 
         self.temp_dir = tempfile.mkdtemp()
         
-        render(self.temp_dir,model_id,callback=self.callback,**args)
+        render(self.temp_dir,params_list,callback=self.callback)
 
 
     def callback(self):
@@ -153,7 +153,7 @@ class render_handler(tornado.web.RequestHandler):
         outfile = os.path.join(temp_cdir,temp_idir + '.tar.gz')
         self.write(open(outfile).read())
         
-        os.system('rm -rf ' + temp_dir)
+        #os.system('rm -rf ' + temp_dir)
         
         self.finish()
 

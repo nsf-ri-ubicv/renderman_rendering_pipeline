@@ -36,54 +36,72 @@ TargetCamera(
 S = RMShader("envlight2",params={"float samples":32,"string envmap":"$ENVMAP","float Kenv":$KENV,"float Kocc":0})
 RMLightSource(shader=S)
 
-load("$OBJ")
+old_parts = []
 
-max_envelope = -numpy.inf
-min_envelope = numpy.inf
+MODEL_PARAM_LIST = $MODEL_PARAM_STRING
 
-offset = 0.
-scaling = 1.
-
-root = worldObject("")
-
-for part in root.iterChilds():
-    if part.geom is not None:
-        
-        arr = numpy.array(part.geom.verts)
-        this_min = arr.min()
-        this_max = arr.max()
-        
-        if this_min < min_envelope:
-            min_envelope = this_min
-        if this_max > max_envelope:
-            max_envelope = this_max
-
-offset = (min_envelope + max_envelope) / 2.
-scaling = object_envelope_factor  / ((max_envelope - min_envelope) / 2.)
-
-for part in root.iterChilds():
-    if part.geom is not None:        
-        
-        # rescale the vertices
-        print("Rescaling vertices for part %s" % part.name)
-        for i in range(len(part.geom.verts)):
-            part.geom.verts[i] = (part.geom.verts[i] - offset) * scaling
+for params in MODEL_PARAM_LIST:
     
-        # rescale the bump map so it isn't crazy        
-        print("Rescaling bump map for part %s" % part.name)
-        mat = part.getMaterial()
-        if mat.map_Bump is not None:
-            mat.map_Bump.bumpsize *= scaling
-
-
-cogs = []
-for part in root.iterChilds():
-    if part.geom is not None: 
-        cogs.append(part.cog)
-cogs_mean = numpy.array(cogs).mean(0)
-
-for part in root.iterChilds():
-    if part.geom is not None: 
-        #part.setOffsetTransform(mat4().translation(cogs_mean).rotate($RYZ,vec3(1,0,0)).rotate($RXZ,vec3(0,1,0)).rotate($RXY,vec3(0,0,1)).translate(vec3($TX,$TY,$TZ)))
-        part.setOffsetTransform(mat4().rotation($RYZ,vec3(1,0,0)).rotate($RXZ,vec3(0,1,0)).rotate($RXY,vec3(0,0,1)).translate(vec3($TX,$TY,$TZ)))
-        part.transform = mat4().rotation(phi,vec3(0,0,1)).rotate(-psi,vec3(0,1,0))
+    obj_file = params['obj_file']
+    load(obj_file)
+    
+    max_envelope = -numpy.inf
+    min_envelope = numpy.inf
+    
+    offset = 0.
+    scaling = 1.
+    
+    root = worldObject("")
+    
+    new_parts = []
+    
+    for part in root.iterChilds():
+        if part not in old_parts and part.geom is not None:
+            
+            old_parts.append(part)
+            new_parts.append(part)
+            
+            arr = numpy.array(part.geom.verts)
+            this_min = arr.min()
+            this_max = arr.max()
+            
+            if this_min < min_envelope:
+                min_envelope = this_min
+            if this_max > max_envelope:
+                max_envelope = this_max
+    
+    offset = (min_envelope + max_envelope) / 2.
+    scaling = object_envelope_factor  / ((max_envelope - min_envelope) / 2.)
+    
+    for part in new_parts:
+        if part.geom is not None:        
+            
+            # rescale the vertices
+            print("Rescaling vertices for part %s" % part.name)
+            for i in range(len(part.geom.verts)):
+                part.geom.verts[i] = (part.geom.verts[i] - offset) * scaling
+        
+            # rescale the bump map so it isn't crazy        
+            print("Rescaling bump map for part %s" % part.name)
+            mat = part.getMaterial()
+            if mat.map_Bump is not None:
+                mat.map_Bump.bumpsize *= scaling
+    
+    
+    cogs = []
+    for part in new_parts:
+        if part.geom is not None: 
+            cogs.append(part.cog)
+    cogs_mean = numpy.array(cogs).mean(0)
+    
+    RYZ = params['ryz']
+    RXZ = params['rxz']
+    RXY = params['rxy']
+    TX = params['tx']
+    TY = params['ty']
+    TZ = params['tz']
+    
+    for part in new_parts:
+        if part.geom is not None: 
+            part.setOffsetTransform(mat4().rotation(RYZ,vec3(1,0,0)).rotate(RYZ,vec3(0,1,0)).rotate(RXY,vec3(0,0,1)).translate(vec3(TX,TY,TZ)))
+            part.transform = mat4().rotation(phi,vec3(0,0,1)).rotate(-psi,vec3(0,1,0))
