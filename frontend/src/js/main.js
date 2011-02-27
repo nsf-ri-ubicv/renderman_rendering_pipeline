@@ -201,7 +201,16 @@ require(["jquery","jquery.address","underscore"],
                     params["kenv"] = parseFloat(kenv);
                 }
                 
-                                
+                var phi = $("#phi input").val();
+                if (phi !== ""){
+                    params["bg_phi"] = parseFloat(phi);
+                }
+                 
+                var psi = $("#psi input").val();
+                if (psi !== ""){
+                    params["bg_psi"] = parseFloat(psi);
+                }                 
+                 
                 var params_list = [params];
                 var params_string = JSON.stringify(params_list);
                 //console.log(params_string)

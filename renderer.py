@@ -68,7 +68,8 @@ def render_single_image(cache_bucket,
                         bg_id,
                         model_params,
                         kenv = KENV_DEFAULT,
-                        bg_angle = BG_ANGLE_DEFAULT):
+                        bg_phi = BG_ANGLE_DEFAULT[0],
+                        bg_psi = BG_ANGLE_DEFAULT[1]):
 
     bucket = cache_bucket
     mbucket = model_bucket
@@ -87,7 +88,7 @@ def render_single_image(cache_bucket,
         p['rxz'] = p.get('rxz', RXZ_DEFAULT)
         p['ryz'] = p.get('ryz', RYZ_DEFAULT)
 
-    params = {'bg_id':bg_id,'bg_angle':bg_angle,'model_params':model_params,'kenv':kenv} 
+    params = {'bg_id':bg_id,'bg_phi': bg_phi, 'bg_psi':bg_psi, 'model_params':model_params,'kenv':kenv} 
     ID_STRING = params_to_id(params)
     k = bucket.get_key(ID_STRING)
     out_file = os.path.abspath(os.path.join(out_dir,ID_STRING + '.tif'))
@@ -118,8 +119,8 @@ def render_single_image(cache_bucket,
                    
         pdict = {'KENV' : kenv, 
                  'ENVMAP':bg_file,
-                 'PHI':bg_angle[0],
-                 'PSI':bg_angle[1],
+                 'PHI':bg_phi,
+                 'PSI':bg_psi,
                  'OUTFILE': out_file,
                  'MODEL_PARAM_STRING': model_param_string
                  }
@@ -135,7 +136,7 @@ def render_single_image(cache_bucket,
         print("SCENEPATH",scenepath)
         
         os.system('cd ' + make_dir + '; render.py -r3delight ' + scenepath)
-        #os.system('rm -rf ' + make_dir)
+        os.system('rm -rf ' + make_dir)
 
           
     F = open(os.path.join(out_dir,ID_STRING + '.params'),'w')

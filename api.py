@@ -153,7 +153,7 @@ class render_handler(tornado.web.RequestHandler):
         outfile = os.path.join(temp_cdir,temp_idir + '.tar.gz')
         self.write(open(outfile).read())
         
-        #os.system('rm -rf ' + temp_dir)
+        os.system('rm -rf ' + temp_dir)
         
         self.finish()
 
