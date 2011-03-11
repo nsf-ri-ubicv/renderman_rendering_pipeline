@@ -5,7 +5,7 @@ Dependencies:
 - boto
 If you are getting the following error:
 AttributeError: S3Connection instance has no attribute 'aws_secret_access_key'
-You'll have to pdate your boto config. For more details see:
+You'll have to update your boto config. For more details see:
 http://code.google.com/p/boto/wiki/BotoConfig
 
 
