@@ -2,6 +2,8 @@ Here are some rough installation instructions that might work:
 
 1) install the dependencies:
 
+        0.) Python >= 2.7.   You need 2.7 for the OrderedDict object.   (I could install a workaround here if this code is "released.")
+
 	i) boto 
 		a) get the latest version and install it (http://code.google.com/p/boto/wiki/BotoConfig)
 		b) set up a boto config file in ~/.boto containing the AWS ID and secret 
