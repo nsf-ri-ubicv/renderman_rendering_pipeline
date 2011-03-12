@@ -42,7 +42,10 @@ Here are some rough installation instructions that might work:
     
     If b) works, then, the REST interface should be available on localhost:9999
     
-    The API documentation is in the code itself, and it's poorly documented right now. 
+    That is, if you sent the right parameters to localhost:9999/render?, you'd get back (eventually)
+    a zip file containing the rendered images. 
+    
+    The API documentation is in the code itself, but it's poorly documented right now. 
 
 
     

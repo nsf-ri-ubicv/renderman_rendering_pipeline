@@ -124,6 +124,10 @@ class mongodb_handler(tornado.web.RequestHandler):
     
     
 class model_handler(mongodb_handler):
+    """
+        DB handler for model DB
+        This handler is accessible via get requests on localhost:9999/models?
+    """
     
     CONN = pm.Connection()
     DB = CONN['dicarlocox_3dmodels']
@@ -131,6 +135,10 @@ class model_handler(mongodb_handler):
         
         
 class background_handler(tornado.web.RequestHandler):
+    """
+        DB handler for backgrounds DB
+        This handler is accessible via get requests on localhost:9999/backgrounds?
+    """
     
     CONN = pm.Connection()
     DB = CONN['dicarlocox_3dmodels']
@@ -139,6 +147,54 @@ class background_handler(tornado.web.RequestHandler):
   
 
 class render_handler(tornado.web.RequestHandler):
+    """
+        main renderer handler
+        
+        This handler is accessible via get requests on localhost:9999/render?
+        
+        
+        This API allows you to specify N images to be rendered and returned as a .zip archive
+        
+        Each image consists of one or more 3d models rendered on an HDR background, with various
+        variance parameters set for each model.
+        
+        
+        The basic syntax for these get requests is, to get N images:
+        
+             params_list=[img_1,img_2, ...., img_N]]
+             
+         where img_i is a dictionary specifying how to render the ith image.  
+         
+         Each such dictionary is of the following form:
+         
+             {"model_params":[{model_spec_1},{model_spec_2}, ..., {model_spec_n}]
+              "bg_id" : bg_id_val,
+              "bg_phi" : bg_phi_val
+              "bg_psi" : bg_psi_val
+              "kenv": kenv_val}
+        
+        where:  
+            a) the "model_spec" elements are dictionaries passing parameters 
+               specifying how to render each model within the image
+            b) the bg_id parameter specifies which background image to choose.  
+               Optional -- default is to choose randomly.
+            c) bg_phi, bg_psi are the angles within the background image (which is a HDR).
+               Optional -- default is  0,0.
+            d) kenv is the optional vslue for the background lighting, default is 7.
+            
+        The "model_spec" format is:
+            {"model_id" : model_id,
+             "tx" : tx,"ty" : ty, "tz":tz,
+             "rxy" : rxy
+             &c}
+             
+        e.g. all the model-related params saying which model to render, and how. 
+        
+        An example:
+        
+            http://localhost:9999/render?params_list=[{"model_params":[{"model_id":"MB31635","rxy":3.14}]}]       
+             
+    """
 
     @tornado.web.asynchronous
     def get(self):
