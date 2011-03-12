@@ -10,8 +10,11 @@ import tornado.web
 import tornado.autoreload
 from tornado.options import define, options
 
-import pymongo as pm
-import pymongo.json_util as json_util
+try:
+    import pymongo as pm
+    import pymongo.json_util as json_util
+except:
+    print("pymongo not installed; frontend functionaliy not available")
 
 from renderer import render
 
@@ -20,6 +23,9 @@ define("port", default=9999, help="run on the given port", type=int)
 
 
 class App(tornado.web.Application):
+    """
+        Tornado app which serves the API.
+    """
     def __init__(self,ioloop):
         handlers = [(r"/models",model_handler),
                     (r"/backgrounds",background_handler),
@@ -34,6 +40,9 @@ class App(tornado.web.Application):
 
 
 def main():
+    """
+        function which starts up the tornado IO loop and the app. 
+    """
     tornado.options.parse_command_line()
     ioloop = tornado.ioloop.IOLoop.instance()
     http_server = tornado.httpserver.HTTPServer(App(ioloop))
@@ -43,7 +52,10 @@ def main():
     
 
 
-def getQuerySequence(args):     
+def getQuerySequence(args):  
+    """
+        simple REST interface for MongoDB.
+    """
     querySequence = args.pop('querySequence',None)
     
     if querySequence is None:
@@ -81,6 +93,9 @@ def getQuerySequence(args):
 
     
 class mongodb_handler(tornado.web.RequestHandler):
+    """
+        base handler for mongodb access. 
+    """
     def get(self):
 
         args = self.request.arguments

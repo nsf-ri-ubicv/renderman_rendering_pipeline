@@ -1,12 +1,62 @@
+Here are some rough installation instructions that might work:
+
+1) install the dependencies:
+
+	i) boto 
+		a) get the latest version and install it (http://code.google.com/p/boto/wiki/BotoConfig)
+		b) set up a boto config file in ~/.boto containing the AWS ID and secret 
+		   id keys (like for Starcluster)
+		   		   
+			If you are getting the following error:
+			AttributeError: S3Connection instance has no attribute 'aws_secret_access_key'
+			You'll have to update your boto config.
+
+	ii) tornado (install version 1.2)
+
+	iii) lib3ds   http://code.google.com/p/lib3ds/
+	
+	iv) 3delight   http://www.3delight.com/en/
+
+	v) cgkit.  
+	    a) get it from my repo, https://github.com/yamins81/cgkit  
+	    b) follow in the instructions in the readme
+	
+	vi) mongodb
+		a) get the software and install it (if at all possible, use the package
+		   repos at the bottom of http://www.mongodb.org/downloads
+		b) start the db  (e.g. run the "mongod" command with relevant arguments)
+	
+	
+	For the frontend:
+    	vii) pymongo (http://api.mongodb.org/python/1.9%2B/index.html)
+	
+	    viii) sass.  assuming you have ruby installed, run "gem install haml"
+	    
+	    
+	    
+	
+2) To run the backend (the actual pipeline):
+    
+    a) go to source directory.  
+    b) run "python api.py"
+    
+    If b) works, then, the REST interface should be available on localhost:9999
+    
+    The API documentation is in the code itself, and it's poorly documented right now. 
 
 
-Dependencies:
-
-- boto
-If you are getting the following error:
-AttributeError: S3Connection instance has no attribute 'aws_secret_access_key'
-You'll have to update your boto config. For more details see:
-http://code.google.com/p/boto/wiki/BotoConfig
-
+    
+3) To run the frontend:
+    
+	i) create some local DBs:
+	    a) to the source dir
+	    b) run "python construct_images.py"
+	    
+    ii) start the frontend server
+        a) go to the "frontend" directory within the source directory
+        b) run "make source"
+    
+    If b) works, then the frontend should be available on localhost:8000.
+    
 
 

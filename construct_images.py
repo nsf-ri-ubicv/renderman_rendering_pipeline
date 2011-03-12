@@ -1,21 +1,9 @@
 import pymongo as pm
 import sqlite3
 import os
-from starflow.utils import MakeDir
 from utils import createCertificate
 import boto
 from boto.s3.key import Key
-
-# def unzip(depends_on='../dicarlocox-3dmodels-v1-zips/',creates=('../dicarlocox-3dmodels-v1/','../ModelBankLibrary.db')):
-#     MakeDir(creates[0])
-#     L = os.listdir(depends_on)
-#     for l in L:
-#         if l.endswith('.tar.gz'):
-#             os.system('tar -xzvf ' + depends_on + l + ' -C ' + creates[0])
-#             os.system('mv ' + creates[0] + '3dmodels/* ' + creates[0])
-#             os.system('rm -rf ' + creates[0] + '3dmodels')
-#     os.system('cp ' + depends_on + 'ModelBankLibrary.db ' + '../')
-    
 
 def get_modeldb(creates='../ModelBankLibrary.db'):
     conn = boto.connect_s3()
@@ -40,8 +28,7 @@ def create_mongodb(depends_on = '../ModelBankLibrary.db', creates = '../certific
         filename = rec[1] + '_3ds.bmp'
         pmrec = {'id':rec[1], 'name':rec[2], 'keywords':kw, 'filepath':filename}
         coll.insert(pmrec)
-        
-    
+          
     createCertificate(creates,'made it')
     
 def make_background_db( creates = '../background_certificate.txt'):
@@ -61,3 +48,9 @@ def make_background_db( creates = '../background_certificate.txt'):
     for rec in recs:
         coll.insert(rec)
         
+if __name__ == '__main__':
+    os.makedir('Temp')
+    os.chdir('Temp')
+    get_modeldb()
+    create_mongodb()
+    #make_background_db()

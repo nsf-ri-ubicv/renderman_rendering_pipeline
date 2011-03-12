@@ -39,7 +39,7 @@ RMLightSource(shader=S)
 old_parts = []
 
 MODEL_PARAM_LIST = $MODEL_PARAM_STRING
-
+bboxes = []
 for params in MODEL_PARAM_LIST:
     
     obj_file = params['obj_file']
@@ -55,6 +55,7 @@ for params in MODEL_PARAM_LIST:
     
     new_parts = []
     
+
     for part in root.iterChilds():
         if part not in old_parts and part.geom is not None:
             
@@ -73,6 +74,14 @@ for params in MODEL_PARAM_LIST:
     offset = (min_envelope + max_envelope) / 2.
     scaling = object_envelope_factor  / ((max_envelope - min_envelope) / 2.)
     
+
+    cogs = []
+    for part in new_parts:
+        if part.geom is not None: 
+            cogs.append(part.cog)
+    cogs_mean = numpy.array(cogs).mean(0)
+    offset = cogs_mean    
+    
     for part in new_parts:
         if part.geom is not None:        
             
@@ -86,22 +95,25 @@ for params in MODEL_PARAM_LIST:
             mat = part.getMaterial()
             if mat.map_Bump is not None:
                 mat.map_Bump.bumpsize *= scaling
-    
-    
-    cogs = []
-    for part in new_parts:
-        if part.geom is not None: 
-            cogs.append(part.cog)
-    cogs_mean = numpy.array(cogs).mean(0)
-    
+        
     RYZ = params['ryz']
     RXZ = params['rxz']
     RXY = params['rxy']
     TX = params['tx']
     TY = params['ty']
     TZ = params['tz']
+    SX = params['sx']
+    SY = params['sy']
+    SZ = params['sz']
     
     for part in new_parts:
         if part.geom is not None: 
-            part.setOffsetTransform(mat4().rotation(RYZ,vec3(1,0,0)).rotate(RYZ,vec3(0,1,0)).rotate(RXY,vec3(0,0,1)).translate(vec3(TX,TY,TZ)))
+            part.setOffsetTransform(mat4().scaling(vec3(1/SX,1/SY,1/SZ)).rotate(RYZ,vec3(1,0,0)).rotate(RYZ,vec3(0,1,0)).rotate(RXY,vec3(0,0,1)).translate(vec3(TX,TY,TZ)))
             part.transform = mat4().rotation(phi,vec3(0,0,1)).rotate(-psi,vec3(0,1,0))
+            
+        
+    b1 = map(min,zip(*[part.boundingBox().getBounds()[0] for part in new_parts if part.geom is not None]))
+    b2 = map(max,zip(*[part.boundingBox().getBounds()[1] for part in new_parts if part.geom is not None]))
+    bbox = [tuple(b1),tuple(b2)]
+    bboxes.append(bbox)
+    

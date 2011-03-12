@@ -19,6 +19,9 @@ TZ_DEFAULT = 0
 RXY_DEFAULT = 0
 RXZ_DEFAULT = 0
 RYZ_DEFAULT = 0
+SX_DEFAULT = 1
+SY_DEFAULT = 1
+SZ_DEFAULT = 1
 BG_ANGLE_DEFAULT = (0,0)
 KENV_DEFAULT = 8
 
@@ -81,12 +84,15 @@ def render_single_image(cache_bucket,
             
     for p in model_params:
         assert 'model_id' in p
-        p['tx'] = p.get('tx',TX_DEFAULT)
-        p['ty'] = p.get('ty',TY_DEFAULT)
-        p['tz'] = p.get('tz',TZ_DEFAULT)
+        p['tx'] = p.get('tx', TX_DEFAULT)
+        p['ty'] = p.get('ty', TY_DEFAULT)
+        p['tz'] = p.get('tz', TZ_DEFAULT)
         p['rxy'] = p.get('rxy', RXY_DEFAULT)
         p['rxz'] = p.get('rxz', RXZ_DEFAULT)
         p['ryz'] = p.get('ryz', RYZ_DEFAULT)
+        p['sx'] = p.get('sx', SX_DEFAULT)
+        p['sy'] = p.get('sy', SY_DEFAULT)
+        p['sz'] = p.get('sz', SZ_DEFAULT)
 
     params = {'bg_id':bg_id,'bg_phi': bg_phi, 'bg_psi':bg_psi, 'model_params':model_params,'kenv':kenv} 
     ID_STRING = params_to_id(params)
