@@ -104,13 +104,15 @@ def render_single_image(cache_bucket,
     else:
         bg_file = os.path.abspath(os.path.join(BG_DIR,bg_id))
         if not os.path.exists(bg_file):
+            print('getting background')
             k = bbucket.get_key(bg_id)
             k.get_contents_to_filename(bg_file) 
-            
+         
         for p in model_params:
             model_id = p['model_id']
             model_dir =  os.path.join(MODEL_DIR,model_id)
             if not os.path.exists(model_dir):
+                print('getting model') 
                 get_model(model_id,mbucket) 
                                 
             model_dir = os.path.abspath(os.path.join(MODEL_DIR,model_id))

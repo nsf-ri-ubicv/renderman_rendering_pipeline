@@ -9,8 +9,8 @@ def get_modeldb(creates='../ModelBankLibrary.db'):
     conn = boto.connect_s3()
     bucket = conn.get_bucket('dicarlocox-3dmodels-v1')
     k = Key(bucket)
-    k.key = 'ModelBankLibrary.bd'
-    k.set_contents_to_filename(creates)
+    k.key = 'ModelBankLibrary.db'
+    k.get_contents_to_filename(creates)
     
     
 def create_mongodb(depends_on = '../ModelBankLibrary.db', creates = '../certificate.txt'):
@@ -30,8 +30,10 @@ def create_mongodb(depends_on = '../ModelBankLibrary.db', creates = '../certific
         coll.insert(pmrec)
           
     createCertificate(creates,'made it')
-    
-def make_background_db( creates = '../background_certificate.txt'):
+  
+import tabular as tb
+
+def make_background_db( creates = '../background_certificate.txt',depends_on='../backgrounds.csv'):
 
     conn = pm.Connection()
     db = conn['dicarlocox_3dmodels']
@@ -48,8 +50,14 @@ def make_background_db( creates = '../background_certificate.txt'):
     for rec in recs:
         coll.insert(rec)
         
+    X = tb.tabarray(SVfile = depends_on)
+    recs = [{'name':x['Path'][:-4],'path':x['Path'],'description':x['Description']} for x in X]
+    for rec in recs:
+        coll.insert(rec)
+        
 if __name__ == '__main__':
-    os.makedir('Temp')
+    if not os.path.exists('Temp'):  
+        os.mkdir('Temp')
     os.chdir('Temp')
     get_modeldb()
     create_mongodb()
