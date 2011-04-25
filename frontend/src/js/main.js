@@ -215,7 +215,7 @@ require(["jquery","jquery.address","underscore"],
                 var params_string = JSON.stringify(params_list);
                 //console.log(params_string)
                 //location.href = "http://localhost:9999/render?params_list=" + params_string;
-                location.href = "http://ec2-50-17-158-215.compute-1.amazonaws.com/:9999/render?params_list=" + params_string;
+                location.href = "http://ec2-50-17-158-215.compute-1.amazonaws.com:9999/render?params_list=" + params_string;
             });
 
 	        if ((path === "/choose") || (path === "/")) {
