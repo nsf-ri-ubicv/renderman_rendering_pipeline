@@ -74,14 +74,7 @@ for params in MODEL_PARAM_LIST:
     offset = (min_envelope + max_envelope) / 2.
     scaling = object_envelope_factor  / ((max_envelope - min_envelope) / 2.)
     
-
-    cogs = []
-    for part in new_parts:
-        if part.geom is not None: 
-            cogs.append(part.cog)
-    cogs_mean = numpy.array(cogs).mean(0)
-    offset = cogs_mean    
-    
+   
     for part in new_parts:
         if part.geom is not None:        
             

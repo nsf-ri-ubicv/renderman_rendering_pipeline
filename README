@@ -2,8 +2,8 @@ Here are some rough installation instructions that might work:
 
 1) install the dependencies:
 
-        0.) Python >= 2.7.   You need 2.7 for the OrderedDict object.   (I could install a workaround here if this code is "released.")
-
+    0.) Python >= 2.6.   
+    
 	i) boto 
 		a) get the latest version and install it (http://code.google.com/p/boto/wiki/BotoConfig)
 		b) set up a boto config file in ~/.boto containing the AWS ID and secret 
@@ -21,8 +21,9 @@ Here are some rough installation instructions that might work:
 
 	v) cgkit.  
 	    a) get it from my repo, https://github.com/yamins81/cgkit  
-	    b) follow in the instructions in the readme
-	
+	    b) follow in the instructions in the cgkit readme.txt
+	    UBUNTU: you need e.g. mesa to provide OpenGL API, get using apt-get (do this if you're seeing the error "no GL/gl.h" &c when you try "scons")
+	    		To use, set LB_LIBRARY_PATH to include boost library path
 	vi) mongodb
 		a) get the software and install it (if at all possible, use the package
 		   repos at the bottom of http://www.mongodb.org/downloads
@@ -33,7 +34,7 @@ Here are some rough installation instructions that might work:
     	vii) pymongo (http://api.mongodb.org/python/1.9%2B/index.html)
 	
 	    viii) sass.  assuming you have ruby installed, run "gem install haml"
-	    
+	         UBUNTU: run "apt-get install haml"
 	    
 	    
 	

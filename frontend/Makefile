@@ -13,10 +13,10 @@ scss: Makefile
 	sass --scss --update $(SRC)/scss:$(SRC)/css	
 
 serve-build: Makefile
-	$(shell cd $(BUILD); python -m SimpleHTTPServer)
+	$(shell cd $(BUILD); python -m SimpleHTTPServer &)
 
 serve-source: Makefile
-	$(shell cd $(SRC); python -m SimpleHTTPServer)
+	$(shell cd $(SRC); python -m SimpleHTTPServer &)
 
 optimize: Makefile
 	requirejs-0.2.1/build/build.sh $(SRC)/js/app.build.js
