@@ -205,7 +205,7 @@ def render_queue(out_dir, params_list,callback=None):
         model_params = params.pop('model_params')
         jt = init_job_template(Session.createJobTemplate()
 ,                         out_dir,
-                          big_id,
+                          bg_id,
                           model_params,
                           params.get('kenv',KENV_DEFAULT),
                           params.get('bg_phi',BG_ANGLE_DEFAULT[0]),
