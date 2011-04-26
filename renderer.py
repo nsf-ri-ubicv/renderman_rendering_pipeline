@@ -64,8 +64,26 @@ def get_model(model_id,bucket):
     os.system('rm -rf ' + tmpdir)        
               
 
-def render_single_image(cache_bucket, 
-                        model_bucket, 
+def render_single_image_queue(bg_id,
+                        model_params,
+                        kenv = KENV_DEFAULT,
+                        bg_phi = BG_ANGLE_DEFAULT[0],
+                        bg_psi = BG_ANGLE_DEFAULT[1]):
+
+    conn = boto.connect_s3()
+    bbucket = conn.get_bucket('dicarlocox-backgrounds')    
+    mbucket = conn.get_bucket('dicarlocox-3dmodels-v1')    
+    render_single_image(mbucket, 
+                        bbucket,
+                        out_dir, 
+                        bg_id,
+                        model_params,
+                        kenv = kenv,
+                        bg_phi = bg_phi,
+                        bg_psi = bg_psi) 
+    
+    
+def render_single_image(mbucket, 
                         bbucket,
                         out_dir, 
                         bg_id,
@@ -74,8 +92,6 @@ def render_single_image(cache_bucket,
                         bg_phi = BG_ANGLE_DEFAULT[0],
                         bg_psi = BG_ANGLE_DEFAULT[1]):
 
-    bucket = cache_bucket
-    mbucket = model_bucket
     
     if not os.path.exists(MODEL_DIR):
         os.makedirs(MODEL_DIR)
@@ -96,56 +112,52 @@ def render_single_image(cache_bucket,
 
     params = {'bg_id':bg_id,'bg_phi': bg_phi, 'bg_psi':bg_psi, 'model_params':model_params,'kenv':kenv} 
     ID_STRING = params_to_id(params)
-    k = bucket.get_key(ID_STRING)
     out_file = os.path.abspath(os.path.join(out_dir,ID_STRING + '.tif'))
     
-    if k:
-        k.get_contents_to_filename(out_file)
-    else:
-        bg_file = os.path.abspath(os.path.join(BG_DIR,bg_id))
-        if not os.path.exists(bg_file):
-            print('getting background')
-            k = bbucket.get_key(bg_id)
-            k.get_contents_to_filename(bg_file) 
-         
-        for p in model_params:
-            model_id = p['model_id']
-            model_dir =  os.path.join(MODEL_DIR,model_id)
-            if not os.path.exists(model_dir):
-                print('getting model') 
-                get_model(model_id,mbucket) 
-                                
-            model_dir = os.path.abspath(os.path.join(MODEL_DIR,model_id))
-            obj_file = os.path.abspath(os.path.join(model_dir,model_id + '.obj'))
-            mtl_path = os.path.abspath(os.path.join(model_dir,model_id + '.mtl'))   
-            mtl_fixer( mtl_path,model_id,model_dir + '/')  
-            p['obj_file'] = obj_file
+    bg_file = os.path.abspath(os.path.join(BG_DIR,bg_id))
+    if not os.path.exists(bg_file):
+        print('getting background')
+        k = bbucket.get_key(bg_id)
+        k.get_contents_to_filename(bg_file) 
+     
+    for p in model_params:
+        model_id = p['model_id']
+        model_dir =  os.path.join(MODEL_DIR,model_id)
+        if not os.path.exists(model_dir):
+            print('getting model') 
+            get_model(model_id,mbucket) 
+                            
+        model_dir = os.path.abspath(os.path.join(MODEL_DIR,model_id))
+        obj_file = os.path.abspath(os.path.join(model_dir,model_id + '.obj'))
+        mtl_path = os.path.abspath(os.path.join(model_dir,model_id + '.mtl'))   
+        mtl_fixer( mtl_path,model_id,model_dir + '/')  
+        p['obj_file'] = obj_file
 
-        model_param_string = repr(model_params)
+    model_param_string = repr(model_params)
+
+    tmpl = Template(open('scene.pyt').read())
+               
+    pdict = {'KENV' : kenv, 
+             'ENVMAP':bg_file,
+             'PHI':bg_phi,
+             'PSI':bg_psi,
+             'OUTFILE': out_file,
+             'MODEL_PARAM_STRING': model_param_string
+             }
+
+    make_dir = os.path.abspath(os.path.join(out_dir,'make_dir'))
+    os.system('mkdir ' + make_dir)
     
-        tmpl = Template(open('scene.pyt').read())
-                   
-        pdict = {'KENV' : kenv, 
-                 'ENVMAP':bg_file,
-                 'PHI':bg_phi,
-                 'PSI':bg_psi,
-                 'OUTFILE': out_file,
-                 'MODEL_PARAM_STRING': model_param_string
-                 }
-
-        make_dir = os.path.abspath(os.path.join(out_dir,'make_dir'))
-        os.system('mkdir ' + make_dir)
-        
-        scene = tmpl.substitute(pdict)
-        scenepath = os.path.abspath(os.path.join(make_dir,'scene_' + ID_STRING + '.py'))
-        F = open(scenepath,'w')
-        F.write(scene)
-        F.close()
-        print("SCENEPATH",scenepath)
-        
-        os.system('cd ' + make_dir + '; render.py -r3delight ' + scenepath)
-        os.system('rm -rf ' + make_dir)
-
+    scene = tmpl.substitute(pdict)
+    scenepath = os.path.abspath(os.path.join(make_dir,'scene_' + ID_STRING + '.py'))
+    F = open(scenepath,'w')
+    F.write(scene)
+    F.close()
+    print("SCENEPATH",scenepath)
+    
+    os.system('cd ' + make_dir + '; render.py -r3delight ' + scenepath)
+    os.system('rm -rf ' + make_dir)
+    
           
     F = open(os.path.join(out_dir,ID_STRING + '.params'),'w')
     cPickle.dump(params,F)
@@ -156,21 +168,32 @@ def render(out_dir, params_list,callback=None):
 
     conn = boto.connect_s3()
     bbucket = conn.get_bucket('dicarlocox-backgrounds')    
-    cache_bucket = conn.get_bucket('dicarlocox-3dmodels-renderedimages')
-    model_bucket = conn.get_bucket('dicarlocox-3dmodels-v1')    
+    mbucket = conn.get_bucket('dicarlocox-3dmodels-v1')    
     bg_list = [x.name for x in bbucket.list()]
     
-    for params in params_list:
-        params = params.copy();
-        bg_id = params.pop('bg_id',bg_list[np.random.randint(len(bg_list))])
-        model_params = params.pop('model_params')
-        render_single_image(cache_bucket, 
-                            model_bucket, 
-                            bbucket,
-                            out_dir, 
-                            bg_id,
-                            model_params,
-                            **params)
+    multi = False
+    if len(params_list) > 2:
+        try:
+            import drmaa
+        except:
+            pass
+        else:
+             multi = True
+             
+    if multi:
+        #set off job array 
+        pass
+    else:
+        for params in params_list:
+            params = params.copy();
+            bg_id = params.pop('bg_id',bg_list[np.random.randint(len(bg_list))])
+            model_params = params.pop('model_params')
+            render_single_image(mbucket, 
+                                bbucket,
+                                out_dir, 
+                                bg_id,
+                                model_params,
+                                **params)
                             
     if callback:
         callback()
