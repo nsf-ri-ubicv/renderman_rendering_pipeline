@@ -157,7 +157,6 @@ def render_single_image(mbucket,
     F.write(scene)
     F.close()
     print("SCENEPATH",scenepath)
-    print("ENV",os.environ)
     
     #os.system('cd ' + make_dir + '; render.py -r3delight ' + scenepath)
     os.system('cd ' + make_dir + '; prerender.py -r3delight ' + scenepath)
