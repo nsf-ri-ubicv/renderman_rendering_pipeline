@@ -242,6 +242,6 @@ def init_job_template(jt,out_dir,bg_id,model_params,kenv,bg_phi,bg_psi):
                                                           'MAYA_PLUG_IN_PATH',
                                                           'DL_DISPLAYS_PATH',
                                                           'DL_SHADERS_PATH']])
-    jt.jobEnvironment['PROCESSORS']='2'
+    jt.jobEnvironment['NSLOTS']='2'
 
     return jt
