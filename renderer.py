@@ -64,7 +64,8 @@ def get_model(model_id,bucket):
     os.system('rm -rf ' + tmpdir)        
               
 
-def render_single_image_queue(bg_id,
+def render_single_image_queue(out_dir,
+                        bg_id,
                         model_params,
                         kenv = KENV_DEFAULT,
                         bg_phi = BG_ANGLE_DEFAULT[0],
