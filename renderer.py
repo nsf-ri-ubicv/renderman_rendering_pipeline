@@ -222,10 +222,10 @@ def render_queue(out_dir, params_list,callback=None):
     if callback:
         callback()
   
-
+import os
 def init_job_template(jt,out_dir,bg_id,model_params,kenv,bg_phi,bg_psi):
     jt.remoteCommand = 'python'
-    jt.workingDirectory = '/home/render/renderman_rendering_pipeline'
+    jt.workingDirectory = os.getcwd()
 
     argstr = "import renderer as R; R.render_single_image_queue(" + repr(out_dir) + "," + repr(bg_id) + "," + repr(model_params) + ", kenv=" + repr(kenv) + ", bg_phi=" + repr(bg_phi) + ", bg_psi=" + repr(bg_psi) + ")"
     jt.args = ["-c",argstr]
