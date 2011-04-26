@@ -75,6 +75,7 @@ def render_single_image_qsub(out_dir,picklefile):
     C = cPickle.loads(open(picklefile).read())
 
     bg_id = C['bg_id']
+    model_params = C['model_params']
     kenv = C.get('kenv',KENV_DEFAULT)
     bg_phi = C.get('bg_phi',BG_ANGLE_DEFAULT[0])
     bg_psi = C.get('bg_psi',BG_ANGLE_DEFAULT[1])
