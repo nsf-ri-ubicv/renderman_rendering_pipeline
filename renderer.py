@@ -172,32 +172,73 @@ def render(out_dir, params_list,callback=None):
     mbucket = conn.get_bucket('dicarlocox-3dmodels-v1')    
     bg_list = [x.name for x in bbucket.list()]
     
-    multi = False
-    if len(params_list) > 2:
-        try:
-            import drmaa
-        except:
-            pass
-        else:
-             multi = True
-             
-    if multi:
-        #set off job array 
-        pass
-    else:
-        for params in params_list:
-            params = params.copy();
-            bg_id = params.pop('bg_id',bg_list[np.random.randint(len(bg_list))])
-            model_params = params.pop('model_params')
-            render_single_image(mbucket, 
-                                bbucket,
-                                out_dir, 
-                                bg_id,
-                                model_params,
-                                **params)
-                            
+    for params in params_list:
+        params = params.copy();
+        bg_id = params.pop('bg_id',bg_list[np.random.randint(len(bg_list))])
+        model_params = params.pop('model_params')
+        render_single_image(mbucket, 
+                            bbucket,
+                            out_dir, 
+                            bg_id,
+                            model_params,
+                            **params)
+                        
     if callback:
         callback()
         
         
+def render_queue(out_dir, params_list,callback=None):
+
+    import drmaa
+    conn = boto.connect_s3()
+    bbucket = conn.get_bucket('dicarlocox-backgrounds')    
+    
+    bg_list = [x.name for x in bbucket.list()]
+    
+    Session = drmaa.Session()
+    Session.initialize()
+    
+    job_templates = []
+    for params in params_list:
+        params = params.copy();
+        bg_id = params.pop('bg_id',bg_list[np.random.randint(len(bg_list))])
+        model_params = params.pop('model_params')
+        jt = init_job_template(Session.createJobTemplate()
+,                         out_dir,
+                          big_id,
+                          model_params,
+                          params.get('kenv',KENV_DEFAULT),
+                          params.get('bg_phi',BG_ANGLE_DEFAULT[0]),
+                          params.get('bg_psi',BG_ANGLE_DEFAULT[1])
+                          )
+        job_templates.append(jt)
+        
+    jobs = [Session.runJob(jt) for jt in job_templates]
      
+    retvals = [Session.wait(job,drmaa.Session.TIMEOUT_WAIT_FOREVER) for job in jobs]
+
+    Session.exit()
+                        
+    if callback:
+        callback()
+  
+
+def init_job_template(jt,out_dir,bg_id,model_params,kenv,bg_phi,bg_psi):
+    jt.remoteCommand = 'python'
+    jt.workingDirectory = '/home/render/renderman_rendering_pipeline'
+
+    argstr = "import renderer as R; R.render_single_image_queue(" + repr(out_dir) + "," + repr(bg_id) + "," + repr(model_params) + ", kenv=" + repr(kenv) + ", bg_phi=" + repr(bg_phi) + ", bg_psi=" + repr(bg_psi) + ")"
+    jt.args = ["-c",argstr]
+    jt.joinFiles = True
+    jt.jobEnvironment = dict([(k,os.environ[k]) for k in ['PYTHONPATH',
+                                                          'PATH',
+                                                          'LD_LIBRARY_PATH',
+                                                          'DL_TEXTURES_PATH',
+                                                          'DELIGHT',
+                                                          'MAYA_SCRIPT_PATH',
+                                                          'INFOPATH',
+                                                          'MAYA_PLUG_IN_PATH',
+                                                          'DL_DISPLAYS_PATH',
+                                                          'DL_SHADERS_PATH']])
+
+    return jt
