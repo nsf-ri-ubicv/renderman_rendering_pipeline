@@ -234,7 +234,7 @@ def init_job_template(jt,out_dir,bg_id,model_params,kenv,bg_phi,bg_psi):
     argstr = "import renderer as R; R.render_single_image_queue(" + repr(out_dir) + "," + repr(bg_id) + "," + repr(model_params) + ", kenv=" + repr(kenv) + ", bg_phi=" + repr(bg_phi) + ", bg_psi=" + repr(bg_psi) + ")"
     jt.args = ["-c",argstr]
     jt.joinFiles = True
-    jt.jobEnvironment = dict([(k,os.environ[k]) for k in ['PYTHONPATH',
+    jt.jobEnvironment = dict([(k,os.environ[k]) for k in ['NSLOTS','PYTHONPATH',
                                                           'PATH',
                                                           'LD_LIBRARY_PATH',
                                                           'DL_TEXTURES_PATH',
@@ -243,8 +243,7 @@ def init_job_template(jt,out_dir,bg_id,model_params,kenv,bg_phi,bg_psi):
                                                           'INFOPATH',
                                                           'MAYA_PLUG_IN_PATH',
                                                           'DL_DISPLAYS_PATH',
-                                                          'DL_SHADERS_PATH',
-                                                          'NSLOTS']])
+                                                          'DL_SHADERS_PATH']])
     
 
     return jt
