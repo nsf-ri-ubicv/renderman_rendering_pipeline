@@ -10,6 +10,8 @@ from string import Template
 import numpy as np
 import boto
 
+import scene_template
+
 MODEL_DIR = 'MODELS'
 BG_DIR = 'BACKGROUNDS'
 
@@ -136,7 +138,7 @@ def render_single_image(mbucket,
 
     model_param_string = repr(model_params)
 
-    tmpl = Template(open('scene.pyt').read())
+    tmpl = Template(scene_template.TEMPLATE)
                
     pdict = {'KENV' : kenv, 
              'ENVMAP':bg_file,
@@ -146,7 +148,7 @@ def render_single_image(mbucket,
              'MODEL_PARAM_STRING': model_param_string
              }
 
-    make_dir = os.path.abspath(os.path.join(out_dir,'make_dir'))
+    make_dir = os.path.abspath(os.path.join(out_dir,'make_dir_' + ID_STRING))
     os.system('mkdir ' + make_dir)
     
     scene = tmpl.substitute(pdict)
