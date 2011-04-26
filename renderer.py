@@ -296,7 +296,7 @@ def render_qsub(out_dir, params_list,callback=None):
         
         
         picklefh = open(picklefile,'w')
-        cPickle.dumps(params,picklefh)
+        cPickle.dump(params,picklefh)
         picklefh.close()
         job_name = hashlib.sha1(out_dir + str(ind)).hexdigest()
         job_names.append(job_name)
