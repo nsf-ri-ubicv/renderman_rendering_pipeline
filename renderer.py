@@ -66,6 +66,29 @@ def get_model(model_id,bucket):
     os.system('rm -rf ' + tmpdir)        
               
 
+def render_single_image_qsub(out_dir,picklefile):
+                        
+
+    conn = boto.connect_s3()
+    bbucket = conn.get_bucket('dicarlocox-backgrounds')    
+    mbucket = conn.get_bucket('dicarlocox-3dmodels-v1')    
+    C = cPickle.loads(open(picklefile).read())
+
+    bg_id = C['bg_id']
+    kenv = C.get('kenv',KENV_DEFAULT)
+    bg_phi = C.get('bg_phi',BG_ANGLE_DEFAULT[0])
+    bg_psi = C.get('bg_psi',BG_ANGLE_DEFAULT[1])
+    
+    render_single_image(mbucket, 
+                        bbucket,
+                        out_dir, 
+                        bg_id,
+                        model_params,
+                        kenv = kenv,
+                        bg_phi = bg_phi,
+                        bg_psi = bg_psi) 
+
+
 def render_single_image_queue(out_dir,
                         bg_id,
                         model_params,
@@ -160,7 +183,7 @@ def render_single_image(mbucket,
     
     #os.system('cd ' + make_dir + '; render.py -r3delight ' + scenepath)
     os.system('cd ' + make_dir + '; prerender.py -r3delight ' + scenepath)
-    os.system('cd ' + make_dir + '; renderdl -t 1 main.rib')
+    os.system('cd ' + make_dir + '; renderdl -t 2 main.rib')
     
     os.system('rm -rf ' + make_dir)
     
@@ -248,3 +271,47 @@ def init_job_template(jt,out_dir,bg_id,model_params,kenv,bg_phi,bg_psi):
     
 
     return jt
+
+
+import copy, cPickle
+import hashlib
+import BeautifulSoup
+import time
+
+def render_qsub(out_dir, params_list,callback=None):
+
+    conn = boto.connect_s3()
+    bbucket = conn.get_bucket('dicarlocox-backgrounds')    
+    
+    bg_list = [x.name for x in bbucket.list()]
+    
+    job_templates = []
+    job_names = []
+    for (ind,params) in enumerate(params_list):
+        picklefile = os.path.abspath(os.path.join(out_dir,'params_' + str(ind) + '.pickle'))
+        
+        params = copy.deepcopy(params)
+        if 'bg_id' not in params:
+            params['bg_id'] = bg_list[np.random.randint(len(bg_list))]
+        
+        
+        picklefh = open(picklefile,'w')
+        cPickle.dumps(params,picklefh)
+        picklefh.close()
+        job_name = hashlib.sha1(out_dir + str(ind)).hexdigest()
+        job_names.append(job_name)
+        
+        os.system('qsub -pe orte sge_script.sh ' + job_name + ' ' + out_dir + ' ' + picklefile)
+    
+    #parse to see if its done
+    while True:
+        os.system('qstat -xml > qstat.xml')
+        Soup = BeautifulSoup.BeautifulStoneSoup(open('qstat.xml'))
+        ongoing_jobs = [str(x.contents[0]) for x in Soup.findAll('jb_name')]
+        if set(job_names).intersection(ongoing_jobs) != set([]):
+            time.sleep(.5)
+        else:
+            break
+ 
+    if callback:
+        callback()
