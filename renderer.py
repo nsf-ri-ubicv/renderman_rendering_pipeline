@@ -301,7 +301,7 @@ def render_qsub(out_dir, params_list,callback=None):
         job_name = hashlib.sha1(out_dir + str(ind)).hexdigest()
         job_names.append(job_name)
         
-        os.system('qsub sge_script.sh ' + job_name + ' ' + out_dir + ' ' + picklefile)
+        os.system('qsub sge_script.sh ' + job_name + ' ' + out_dir + ' ' + os.path.abspath(picklefile))
     
     #parse to see if its done
     while True:
