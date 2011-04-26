@@ -159,7 +159,10 @@ def render_single_image(mbucket,
     print("SCENEPATH",scenepath)
     print("ENV",os.environ)
     
-    os.system('cd ' + make_dir + '; render.py -r3delight ' + scenepath)
+    #os.system('cd ' + make_dir + '; render.py -r3delight ' + scenepath)
+    os.system('cd ' + make_dir + '; prerender.py -r3delight ' + scenepath)
+    os.system('cd ' + make_dir + '; renderdl -t 1 main.rib')
+    
     os.system('rm -rf ' + make_dir)
     
           
@@ -230,11 +233,10 @@ def init_job_template(jt,out_dir,bg_id,model_params,kenv,bg_phi,bg_psi):
     jt.remoteCommand = 'python'
     jt.workingDirectory = os.getcwd()
 
-    os.environ['NSLOTS']='2' 
     argstr = "import renderer as R; R.render_single_image_queue(" + repr(out_dir) + "," + repr(bg_id) + "," + repr(model_params) + ", kenv=" + repr(kenv) + ", bg_phi=" + repr(bg_phi) + ", bg_psi=" + repr(bg_psi) + ")"
     jt.args = ["-c",argstr]
     jt.joinFiles = True
-    jt.jobEnvironment = dict([(k,os.environ[k]) for k in ['NSLOTS','PYTHONPATH',
+    jt.jobEnvironment = dict([(k,os.environ[k]) for k in ['PYTHONPATH',
                                                           'PATH',
                                                           'LD_LIBRARY_PATH',
                                                           'DL_TEXTURES_PATH',
