@@ -197,8 +197,6 @@ class RenderHandler(tornado.web.RequestHandler):
              
     """
     
-    render_func = renderer.render
-
     @tornado.web.asynchronous
     def get(self):
         args = self.request.arguments
@@ -213,7 +211,7 @@ class RenderHandler(tornado.web.RequestHandler):
 
         self.temp_dir = tempfile.mkdtemp()
         
-        self.render_func(self.temp_dir,params_list,callback=self.callback)
+        self.render(params_list)
 
 
     def callback(self):
@@ -230,11 +228,17 @@ class RenderHandler(tornado.web.RequestHandler):
         os.system('rm -rf ' + temp_dir)
         
         self.finish()
+        
+    def render(self,params_list):
+        renderer.render(self.temp_dir,params_list,callback=self.callback)
+
 
 
 class QsubRenderHandler(RenderHandler):
 
-    render_func = renderer.render_qsub
+    def render(self,params_list):
+        renderer.render_qsub(self.temp_dir,params_list,callback=self.callback)
+   
     
 if __name__ == "__main__":
     main()
