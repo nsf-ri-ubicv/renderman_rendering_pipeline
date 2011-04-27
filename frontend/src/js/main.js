@@ -218,6 +218,11 @@ require(["jquery","jquery.address","underscore"],
                 if (kenv !== ""){
                     params["kenv"] = parseFloat(kenv);
                 }
+             
+                var bg_id = $("#bg_id input").val();
+                if (bg_id !== ""){
+                    params["bg_id"] = bg_id;
+                }                
                 
                 var phi = $("#phi input").val();
                 if (phi !== ""){
