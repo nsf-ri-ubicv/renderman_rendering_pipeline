@@ -68,7 +68,7 @@ require(["jquery","jquery.address","underscore"],
 		    }
 		    
 			$.ajax({
-				url: "http://localhost:9999/models",
+				url: "http://50.19.109.25:9999/models",
 				dataType: 'jsonp',
 				data:params,
 				traditional:true,
@@ -108,7 +108,7 @@ require(["jquery","jquery.address","underscore"],
 	        $.address.jsonhash(state);
 	        $.address.update();
 			$.ajax({
-				url: "http://localhost:9999/models",
+				url: "http://50.19.109.25:9999/models",
 				dataType: 'jsonp',
 				data: {action:"distinct",field:by},
 				traditional:true,
