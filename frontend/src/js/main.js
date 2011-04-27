@@ -12,6 +12,9 @@ require(["jquery","jquery.address","underscore"],
 			var tx_box = $('<div class="var_box tx">tx = <input type="text"></input></div>');
 			var ty_box = $('<div class="var_box ty">ty = <input type="text"></input></div>');
 			var tz_box = $('<div class="var_box tz">tz = <input type="text"></input></div>');
+			var sx_box = $('<div class="var_box sx">sx = <input type="text"></input></div>');
+			var sy_box = $('<div class="var_box sy">sy = <input type="text"></input></div>');
+			var sz_box = $('<div class="var_box sz">sz = <input type="text"></input></div>');			
 			var rxy_box = $('<div class="var_box rxy">rxy = <input type="text"></input></div>');
 			var rxz_box = $('<div class="var_box rxz">rxz = <input type="text"></input></div>');
 			var ryz_box = $('<div class="var_box ryz">ryz = <input type="text"></input></div>');
@@ -21,6 +24,9 @@ require(["jquery","jquery.address","underscore"],
 			inner_cont.append(tx_box);
 			inner_cont.append(ty_box);
 			inner_cont.append(tz_box);
+			inner_cont.append(sx_box);
+			inner_cont.append(sy_box);
+			inner_cont.append(sz_box);			
 			inner_cont.append(rxy_box);
 			inner_cont.append(rxz_box);
 			inner_cont.append(ryz_box);
@@ -162,7 +168,7 @@ require(["jquery","jquery.address","underscore"],
             
                 var model_params = [];
                 var params;
-                
+                var tx,ty,tz,sx,sy,sz,rxy,rxz,ryz;
                 $.each($("#renderlist .selected_model"), function(ind,obj){
                     obj = $(obj);
                     params = {};
@@ -179,6 +185,18 @@ require(["jquery","jquery.address","underscore"],
                     if (tz !== ''){
                         params['tz'] = parseFloat(tz);
                     }   
+                    sx = obj.find(".sx input").val();      
+                    if (sx !== ''){
+                        params['sx'] = parseFloat(sx);
+                    }
+                    sy = obj.find(".sy input").val();      
+                    if (sy !== ''){
+                        params['sy'] = parseFloat(sy);
+                    }                   
+                    sz = obj.find(".sz input").val();      
+                    if (sz !== ''){
+                        params['sz'] = parseFloat(sz);
+                    }                       
                     rxy = obj.find(".rxy input").val();      
                     if (rxy !== ''){
                         params['rxy'] = parseFloat(rxy);
@@ -209,7 +227,8 @@ require(["jquery","jquery.address","underscore"],
                 var psi = $("#psi input").val();
                 if (psi !== ""){
                     params["bg_psi"] = parseFloat(psi);
-                }                 
+                }  
+                
                  
                 var params_list = [params];
                 var params_string = JSON.stringify(params_list);
