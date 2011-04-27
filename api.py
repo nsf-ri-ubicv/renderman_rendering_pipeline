@@ -10,13 +10,13 @@ import tornado.web
 import tornado.autoreload
 from tornado.options import define, options
 
+import renderer
+
 try:
     import pymongo as pm
     import pymongo.json_util as json_util
 except:
     print("pymongo not installed; frontend functionaliy not available")
-
-from renderer import render
 
 
 define("port", default=9999, help="run on the given port", type=int)
@@ -27,9 +27,10 @@ class App(tornado.web.Application):
         Tornado app which serves the API.
     """
     def __init__(self,ioloop):
-        handlers = [(r"/models",model_handler),
-                    (r"/backgrounds",background_handler),
-                    (r"/render",render_handler),
+        handlers = [(r"/models",ModelHandler),
+                    (r"/backgrounds",BackgroundHandler),
+                    (r"/render",RenderHandler),
+                    (r"/renderq",QsubRenderHandler),
                     (r"/dicarlocox-3dmodels-v1/(.*)",
                      tornado.web.StaticFileHandler,
                      {'path':os.path.join(os.path.dirname(__file__), "dicarlocox-3dmodels-v1")}
@@ -92,7 +93,7 @@ def getQuerySequence(args):
     return querySequence
 
     
-class mongodb_handler(tornado.web.RequestHandler):
+class MongoDBHandler(tornado.web.RequestHandler):
     """
         base handler for mongodb access. 
     """
@@ -123,7 +124,7 @@ class mongodb_handler(tornado.web.RequestHandler):
             self.write(')')    
     
     
-class model_handler(mongodb_handler):
+class ModelHandler(MongoDBHandler):
     """
         DB handler for model DB
         This handler is accessible via get requests on localhost:9999/models?
@@ -134,7 +135,7 @@ class model_handler(mongodb_handler):
     COLL = DB['3ds_test_images']  
         
         
-class background_handler(tornado.web.RequestHandler):
+class BackgroundHandler(MongoDBHandler):
     """
         DB handler for backgrounds DB
         This handler is accessible via get requests on localhost:9999/backgrounds?
@@ -146,7 +147,7 @@ class background_handler(tornado.web.RequestHandler):
     
   
 
-class render_handler(tornado.web.RequestHandler):
+class RenderHandler(tornado.web.RequestHandler):
     """
         main renderer handler
         
@@ -195,6 +196,8 @@ class render_handler(tornado.web.RequestHandler):
             http://localhost:9999/render?params_list=[{"model_params":[{"model_id":"MB31635","rxy":3.14}]}]       
              
     """
+    
+    render_func = renderer.render
 
     @tornado.web.asynchronous
     def get(self):
@@ -210,7 +213,7 @@ class render_handler(tornado.web.RequestHandler):
 
         self.temp_dir = tempfile.mkdtemp()
         
-        render(self.temp_dir,params_list,callback=self.callback)
+        self.render_func(self.temp_dir,params_list,callback=self.callback)
 
 
     def callback(self):
@@ -228,6 +231,10 @@ class render_handler(tornado.web.RequestHandler):
         
         self.finish()
 
+
+class QsubRenderHandler(RenderHandler):
+
+    render_func = renderer.render_qsub
     
 if __name__ == "__main__":
     main()
