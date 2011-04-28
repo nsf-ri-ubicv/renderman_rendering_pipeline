@@ -281,6 +281,7 @@ import time
 
 def render_qsub(out_dir, params_list,callback=None):
 
+    print(out_dir, params_list)
     conn = boto.connect_s3()
     bbucket = conn.get_bucket('dicarlocox-backgrounds')    
     
