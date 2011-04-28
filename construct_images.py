@@ -33,7 +33,7 @@ def create_mongodb(depends_on = '../ModelBankLibrary.db', creates = '../certific
   
 import tabular as tb
 
-def make_background_db( creates = '../background_certificate.txt',depends_on='../backgrounds.csv'):
+def make_background_db( creates = '../background_certificate.txt',depends_on=('../3d_hdr_backgrounds.csv','../2d_grayscale_backgrounds.csv')):
 
     conn = pm.Connection()
     db = conn['dicarlocox_3dmodels']
@@ -50,10 +50,16 @@ def make_background_db( creates = '../background_certificate.txt',depends_on='..
     for rec in recs:
         coll.insert(rec)
         
-    X = tb.tabarray(SVfile = depends_on)
-    recs = [{'name':x['Path'][:-4],'path':x['Path'],'description':x['Description']} for x in X]
+    X = tb.tabarray(SVfile = depends_on[0])
+    recs = [{'name':x['Path'][:-4],'path':x['Path'],'description':x['Description'],'type':'3d hdr'} for x in X]
     for rec in recs:
         coll.insert(rec)
+        
+        
+    X = tb.tabarray(SVfile = depends_on[1])
+    recs = [{'name':x['Path'][:-4],'path':x['Path'],'type':'2d grayscale'} for x in X]
+    for rec in recs:
+        coll.insert(rec)        
         
 if __name__ == '__main__':
     if not os.path.exists('Temp'):  
