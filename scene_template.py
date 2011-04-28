@@ -99,9 +99,9 @@ for params in MODEL_PARAM_LIST:
     SY = SY*scaling
     SZ = SZ*scaling
     
-    TX = TX - offset
-    TY = TY - offset
-    TZ = TZ - offset
+    TX = TX - offset*scaling
+    TY = TY - offset*scaling
+    TZ = TZ - offset*scaling
 
     
     for part in new_parts:
