@@ -306,7 +306,6 @@ def render_qsub(out_dir, params_list,callback=None):
         os.system('sed s/JOB_NAME/' + job_name + '/ ../renderman_rendering_pipeline/sge_script_template.sh > ' + scriptpath)
         #this needn't be executed from a shared location as long as the function finally writes to the shared location
         a_dir,b_dir = os.path.split(out_dir)
-        print a_dir,b_dir,scriptpath
         os.system('cd ' + a_dir + '; qsub ' + scriptpath + ' ' + out_dir + ' ' + picklefile)
     
     #parse to see if its done

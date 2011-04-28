@@ -2,7 +2,7 @@ export PATH=/opt/bin:$PATH
 
 export LD_LIBRARY_PATH=/opt/boost_1_43/lib
 
-source /usr/local/3delight-9.0.84/.3delight_bash 
+source /usr/local/3delight-9.0.97/.3delight_bash 
 
 export PYTHONPATH=/home/tools/StarFlow:/home/tools/pymongo:/home/tools/tabular:/home/tools/BeautifulSoup-3.2.0:/home/render/renderman_rendering_pipeline
 
