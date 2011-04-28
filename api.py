@@ -244,7 +244,7 @@ class QsubRenderHandler(RenderHandler):
     def render(self,params_list):
         renderer.render_qsub(self.temp_dir,params_list,callback=self.callback)
         
-    def get_tempdir():
+    def get_tempdir(self):
          
         return os.path.join('/home/render/render_wd',random_id())
    
