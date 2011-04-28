@@ -301,9 +301,11 @@ def render_qsub(out_dir, params_list,callback=None):
         picklefh.close()
         job_name = 'render_' + hashlib.sha1(out_dir + str(ind)).hexdigest()
         job_names.append(job_name)
+
         
-        os.system('cd /home/render/render_wd; sed s/JOB_NAME/' + job_name + '/ ../renderman_rendering_pipeline/sge_script_template.sh > sge_script_' + job_name + '.sh')
-        os.system('cd /home/render/render_wd; qsub sge_script_' + job_name + '.sh ' + out_dir + ' ' + os.path.abspath(picklefile))
+        os.system('sed s/JOB_NAME/' + job_name + '/ ../renderman_rendering_pipeline/sge_script_template.sh > ' + os.path.abspath(os.path.join(out_dir,'sge_script_' + job_name + '.sh')))
+        #this needn't be executed from a shared location as long as the function finally writes to the shared location
+        os.system('cd ' + out_dir + '; qsub sge_script_' + job_name + '.sh ' + out_dir + ' ' + picklefile)
     
     #parse to see if its done
     while True:

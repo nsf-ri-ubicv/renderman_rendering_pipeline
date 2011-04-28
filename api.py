@@ -209,11 +209,13 @@ class RenderHandler(tornado.web.RequestHandler):
             
         params_list = args.pop('params_list')
 
-        self.temp_dir = tempfile.mkdtemp()
+        self.temp_dir = self.get_tempdir()
         
         self.render(params_list)
 
-
+    def get_tempdir(self):
+        return tempfile.mkdtemp()
+        
     def callback(self):
      
         temp_dir = self.temp_dir
@@ -238,6 +240,9 @@ class QsubRenderHandler(RenderHandler):
 
     def render(self,params_list):
         renderer.render_qsub(self.temp_dir,params_list,callback=self.callback)
+        
+    def get_tempdir():
+        return '/home/render/render_wd'
    
     
 if __name__ == "__main__":
