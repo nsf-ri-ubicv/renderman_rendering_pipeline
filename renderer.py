@@ -281,7 +281,6 @@ import time
 
 def render_qsub(out_dir, params_list,callback=None):
 
-    print(out_dir, params_list)
     conn = boto.connect_s3()
     bbucket = conn.get_bucket('dicarlocox-backgrounds')    
     
@@ -296,7 +295,7 @@ def render_qsub(out_dir, params_list,callback=None):
         if 'bg_id' not in params:
             params['bg_id'] = bg_list[np.random.randint(len(bg_list))]
         
-        
+    
         picklefh = open(picklefile,'w')
         cPickle.dump(params,picklefh)
         picklefh.close()
