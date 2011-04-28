@@ -11,7 +11,7 @@ import numpy as np
 import boto
 
 import scene_template
-improt scene_template_point
+import scene_template_point
 
 MODEL_DIR = 'MODELS'
 BG_DIR = 'BACKGROUNDS'
