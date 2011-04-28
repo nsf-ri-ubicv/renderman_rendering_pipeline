@@ -302,8 +302,8 @@ def render_qsub(out_dir, params_list,callback=None):
         job_name = 'render_' + hashlib.sha1(out_dir + str(ind)).hexdigest()
         job_names.append(job_name)
         
-        os.system('sed s/JOB_NAME/' + job_name + '/ sge_script_template.sh > sge_script_' + job_name + '.sh')
-        os.system('qsub sge_script_' + job_name + '.sh ' + out_dir + ' ' + os.path.abspath(picklefile))
+        os.system('cd /home/render/render_wd; sed s/JOB_NAME/' + job_name + '/ ../renderman_rendering_pipeline/sge_script_template.sh > sge_script_' + job_name + '.sh')
+        os.system('cd /home/render/render_wd; qsub sge_script_' + job_name + '.sh ' + out_dir + ' ' + os.path.abspath(picklefile))
     
     #parse to see if its done
     while True:
