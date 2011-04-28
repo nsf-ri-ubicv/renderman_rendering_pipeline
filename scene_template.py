@@ -78,11 +78,6 @@ for params in MODEL_PARAM_LIST:
    
     for part in new_parts:
         if part.geom is not None:        
-            
-            # rescale the vertices
-            print("Rescaling vertices for part %s" % part.name)
-            for i in range(len(part.geom.verts)):
-                part.geom.verts[i] = (part.geom.verts[i] - offset) * scaling
         
             # rescale the bump map so it isn't crazy        
             print("Rescaling bump map for part %s" % part.name)
@@ -100,6 +95,9 @@ for params in MODEL_PARAM_LIST:
     SY = params['sy']
     SZ = params['sz']
 
+    SX = SX*scaling
+    SY = SY*scaling
+    SZ = SZ*scaling
     
     for part in new_parts:
         if part.geom is not None: 
