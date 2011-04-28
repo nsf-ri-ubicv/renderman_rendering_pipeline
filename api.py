@@ -235,6 +235,9 @@ class RenderHandler(tornado.web.RequestHandler):
         renderer.render(self.temp_dir,params_list,callback=self.callback)
 
 
+def random_id():
+    return hashlib.sha1(str(np.random.randint(10,size=(32,)))).hexdigest()    
+
 
 class QsubRenderHandler(RenderHandler):
 
@@ -242,7 +245,8 @@ class QsubRenderHandler(RenderHandler):
         renderer.render_qsub(self.temp_dir,params_list,callback=self.callback)
         
     def get_tempdir():
-        return '/home/render/render_wd'
+         
+        return os.path.join('/home/render/render_wd',random_id())
    
     
 if __name__ == "__main__":
