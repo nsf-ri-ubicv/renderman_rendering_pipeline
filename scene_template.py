@@ -94,10 +94,15 @@ for params in MODEL_PARAM_LIST:
     SX = params['sx']
     SY = params['sy']
     SZ = params['sz']
-
+    
     SX = SX*scaling
     SY = SY*scaling
     SZ = SZ*scaling
+    
+    TX = TX - offset
+    TY = TY - offset
+    TZ = TZ - offset
+
     
     for part in new_parts:
         if part.geom is not None: 
