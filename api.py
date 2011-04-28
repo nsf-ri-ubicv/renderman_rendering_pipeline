@@ -234,7 +234,7 @@ class RenderHandler(tornado.web.RequestHandler):
     def render(self,params_list):
         renderer.render(self.temp_dir,params_list,callback=self.callback)
 
-
+import hashlib
 def random_id():
     return hashlib.sha1(str(np.random.randint(10,size=(32,)))).hexdigest()    
 
