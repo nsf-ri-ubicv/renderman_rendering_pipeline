@@ -161,11 +161,12 @@ def render_single_image(mbucket,
         p['obj_file'] = obj_file
 
     model_param_string = repr(model_params)
-
+    
     tmpl = Template(scene_template.TEMPLATE)
                
     pdict = {'KENV' : kenv, 
              'ENVMAP':bg_file,
+             'BACKGROUND':bg_file,
              'PHI':bg_phi,
              'PSI':bg_psi,
              'OUTFILE': out_file,

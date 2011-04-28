@@ -222,7 +222,7 @@ class RenderHandler(tornado.web.RequestHandler):
         temp_cdir, temp_idir = os.path.split(temp_dir)
         os.system('cd ' + temp_cdir + '; tar -czvf ' + temp_idir + '.tar.gz ' + temp_idir)
         
-        self.set_header("Content-Encoding", "gzip")
+        self.set_header("Content-Type", "x-gzip")
         self.set_header("Content-Disposition", "attachment; filename="+temp_idir + '.tar.gz')
         outfile = os.path.join(temp_cdir,temp_idir + '.tar.gz')
         self.write(open(outfile).read())

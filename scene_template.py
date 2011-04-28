@@ -9,7 +9,7 @@ Globals(
     output = "$OUTFILE",
     displaymode = "rgba",
     output_framebuffer = False,
-    rib = 'Imager "background"  "string bgtexture" "$ENVMAP"'
+    rib = 'Imager "background"  "string bgtexture" "$BACKGROUND"'
 )
 
 cos = numpy.cos
