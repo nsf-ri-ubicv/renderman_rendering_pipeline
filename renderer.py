@@ -117,7 +117,8 @@ def render_single_image(mbucket,
                         model_params,
                         kenv = KENV_DEFAULT,
                         bg_phi = BG_ANGLE_DEFAULT[0],
-                        bg_psi = BG_ANGLE_DEFAULT[1]):
+                        bg_psi = BG_ANGLE_DEFAULT[1],
+                        pointsource_params=None):
 
     
     if not os.path.exists(MODEL_DIR):
@@ -136,7 +137,7 @@ def render_single_image(mbucket,
         p['sx'] = p.get('sx', SX_DEFAULT)
         p['sy'] = p.get('sy', SY_DEFAULT)
         p['sz'] = p.get('sz', SZ_DEFAULT)
-
+ 
     params = {'bg_id':bg_id,'bg_phi': bg_phi, 'bg_psi':bg_psi, 'model_params':model_params,'kenv':kenv} 
     ID_STRING = params_to_id(params)
     out_file = os.path.abspath(os.path.join(out_dir,ID_STRING + '.tif'))
@@ -162,9 +163,24 @@ def render_single_image(mbucket,
 
     model_param_string = repr(model_params)
     
-    tmpl = Template(scene_template.TEMPLATE)
+    if pointsource_params is not None:
+        tmpl = Template(scene_template_point.TEMPLATE)
+        
+        point_light_param_string = process_param_dict(pointsource_params)
+        
+        pdict = {
+             'BACKGROUND':bg_file,
+             'PHI':bg_phi,
+             'PSI':bg_psi,
+             'OUTFILE': out_file,
+             'MODEL_PARAM_STRING': model_param_string,
+             'POINT_LIGHT_PARAM_STRING':point_light_param_string
+             }
+        
+    else:
+        tmpl = Template(scene_template.TEMPLATE)
                
-    pdict = {'KENV' : kenv, 
+        pdict = {'KENV' : kenv, 
              'ENVMAP':bg_file,
              'BACKGROUND':bg_file,
              'PHI':bg_phi,
@@ -321,3 +337,7 @@ def render_qsub(out_dir, params_list,callback=None):
  
     if callback:
         callback()
+
+def process_param_dict(pdict):
+
+    return ','.join([k + '=' + repr(v) for (k,v) in pdict.items()])
