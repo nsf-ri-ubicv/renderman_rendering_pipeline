@@ -99,20 +99,12 @@ for params in MODEL_PARAM_LIST:
     SY = SY*scaling
     SZ = SZ*scaling
     
-    TX = TX + offset*scaling
-    TY = TY + offset*scaling
-    TZ = TZ + offset*scaling
-
     
     for part in new_parts:
         if part.geom is not None: 
             part.setOffsetTransform(mat4().scaling(vec3(1/SX,1/SY,1/SZ)).rotate(RYZ,vec3(1,0,0)).rotate(RXZ,vec3(0,1,0)).rotate(RXY,vec3(0,0,1)).translate(vec3(TX,TY,TZ)))
             part.transform = mat4().rotation(phi,vec3(0,0,1)).rotate(-psi,vec3(0,1,0))
             
-        
-    b1 = map(min,zip(*[part.boundingBox().getBounds()[0] for part in new_parts if part.geom is not None]))
-    b2 = map(max,zip(*[part.boundingBox().getBounds()[1] for part in new_parts if part.geom is not None]))
-    bbox = [tuple(b1),tuple(b2)]
-    bboxes.append(bbox)
+
 
 """
