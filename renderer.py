@@ -205,6 +205,7 @@ def render_single_image(mbucket,
     print("SCENEPATH",scenepath)
     
     #os.system('cd ' + make_dir + '; render.py -r3delight ' + scenepath)
+    print('ls ' + make_dir)
     os.system('cd ' + make_dir + '; prerender.py -r3delight ' + scenepath)
     os.system('cd ' + make_dir + '; renderdl -nd -t 2 main.rib')
     
