@@ -84,11 +84,15 @@ require(["jquery","jquery.address","underscore"],
 
 					$.each(data,function(i,v){
 						
-						path = v['filepath'];
+						if (v['filepath'] !== undefined){
+						    path = "http://dicarlocox-3dmodels-images.s3.amazonaws.com/" + v['filepath'];
+						} else {
+						    path = "";
+						}
 						model_id = v['id'];
 						model_name = v['name'];
 		
-						thing = $('<div class="model_box" id="' + model_id + '" name="' + model_name + '"><div class="model_box_img"><img src="http://dicarlocox-3dmodels-images.s3.amazonaws.com/' + path + '" height="200px"/></div><div class="model_box_id">' + model_id + '</div><div class="model_box_name">' + model_name + '</div></span>')
+						thing = $('<div class="model_box" id="' + model_id + '" name="' + model_name + '"><div class="model_box_img"><img src="' + path + '" height="200px"/></div><div class="model_box_id">' + model_id + '</div><div class="model_box_name">' + model_name + '</div></span>')
 						thing.click(function(e){ 
 						    addToRenderList(e.currentTarget);
 						});
