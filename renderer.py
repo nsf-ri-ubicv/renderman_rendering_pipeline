@@ -1,4 +1,5 @@
 import os
+import re
 import math
 import hashlib
 import tempfile
@@ -9,6 +10,8 @@ from string import Template
 
 import numpy as np
 import boto
+
+from starflow.utils import uniqify
 
 import scene_template
 import scene_template_point
@@ -44,13 +47,20 @@ def new_val(x):
 def params_to_id(p):
     newp = new_val(p)
     return hashlib.sha1(repr(newp)).hexdigest()
-    
-    
+
+   
+STRING_PATTERN = re.compile(' [\S]+.(jpg|JPG|bmp|BMP|tif|TIF|tiff|TIFF|png|PNG)')
+
 def mtl_fixer(path,model_id,libpath):
     F = open(path).read()
-    F = F.replace("C:\\My 3D Models\\" + model_id + "\\\\",libpath)
-    F = F.replace("C:\\Program Files\\Autodesk\\3ds Max 2011\\maps\\Backgrounds\\",libpath)
-    F = F.replace("C:\\Program Files\\Autodesk\\3ds Max 2011\\maps\\Reflection\\",libpath)
+    F = F.replace("C:\\My 3D Models\\" + model_id + "\\\\",'')
+    F = F.replace("C:\\Program Files\\Autodesk\\3ds Max 2011\\maps\\Backgrounds\\",'')
+    F = F.replace("C:\\Program Files\\Autodesk\\3ds Max 2011\\maps\\Reflection\\",'')
+    
+    D = uniqify([x.group() for x in STRING_PATTERN.finditer(s)])
+    for d in D:
+        F = F.replace(d, ' ' + os.path.join(libpath,d.strip()))
+    
     f = open(path,'w')
     f.write(F)
     f.close()
@@ -202,10 +212,8 @@ def render_single_image(mbucket,
     F = open(scenepath,'w')
     F.write(scene)
     F.close()
-    print("SCENEPATH",scenepath)
     
     #os.system('cd ' + make_dir + '; render.py -r3delight ' + scenepath)
-    print(os.listdir(make_dir))
     os.system('cd ' + make_dir + '; prerender.py -r3delight ' + scenepath)
     os.system('cd ' + make_dir + '; renderdl -nd -t 2 main.rib')
     
