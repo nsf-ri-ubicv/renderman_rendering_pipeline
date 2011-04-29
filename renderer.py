@@ -62,7 +62,11 @@ def get_model(model_id,bucket):
     k.get_contents_to_filename(os.path.join(tmpdir,model_id + '.zip'))
     os.system('cd ' + tmpdir + '; tar -xzvf ' + model_id + '.zip')
     
-    path = os.path.join(tmpdir,'3dmodels',model_id)
+    if os.path.exists(os.path.join(tmpdir,model_id)):
+        path = os.path.join(tmpdir,model_id)
+    else:
+        path = os.path.join(tmpdir,'3dmodels',model_id)
+        
     os.system('mv ' + path + ' ' + MODEL_DIR)
     os.system('rm -rf ' + tmpdir)        
               

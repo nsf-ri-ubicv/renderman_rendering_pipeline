@@ -1,0 +1,18 @@
+metametadata={'dialect': 1, 'names': 3, 'types': 2}
+{'lineterminator': '\n', 'skipinitialspace': False, 'quoting': 0, 'delimiter': ',', 'escapechar': None, 'quotechar': '"', 'doublequote': True}
+str
+ID
+bulky_ship
+cargo
+cruiser
+ferry
+fishing_boat
+hydrofoil
+icebreaker
+motoryacht
+pilotboat
+support_ship
+tanker
+trawler
+tugboat
+yacht

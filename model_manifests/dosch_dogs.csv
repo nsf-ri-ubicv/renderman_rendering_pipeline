@@ -1,0 +1,16 @@
+metametadata={'dialect': 1, 'names': 3, 'types': 2}
+{'lineterminator': '\n', 'skipinitialspace': False, 'quoting': 0, 'delimiter': ',', 'escapechar': None, 'quotechar': '"', 'doublequote': True}
+str
+ID
+bloodhound
+bullmastiff
+chihuahua
+coyote
+dalmatian
+doberman
+goldenretriever
+pug
+redfox
+schnauzer
+wiemaraner
+wolf

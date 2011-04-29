@@ -1,0 +1,16 @@
+metametadata={'dialect': 1, 'names': 3, 'types': 2}
+{'lineterminator': '\n', 'skipinitialspace': False, 'quoting': 0, 'delimiter': ',', 'escapechar': None, 'quotechar': '"', 'doublequote': True}
+str
+ID
+cheetah
+foreign_cat
+jaguar
+leopard
+lion
+longhair_cat
+lynx
+oriental
+panther
+semilonghair_cat
+shorthair_cat
+tiger
