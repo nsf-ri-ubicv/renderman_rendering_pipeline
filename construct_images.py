@@ -31,43 +31,43 @@ def create_mongodb(depends_on = '../ModelBankLibrary.db', creates = '../certific
         coll.insert(pmrec)
           
     X = tb.tabarray(SVfile = '../model_manifests/faces.csv')
-    for x in X
+    for x in X:
         rec = {'id':x['ID'],'name':x['ID'],'keywords':['face'],'type':'facegen'}
         coll.insert(pmrec)
     X = tb.tabarray(SVfile = '../model_manifests/dosch_antique_furniture.csv')
-    for x in X
+    for x in X:
         rec = {'id':x['ID'],'name':x['ID'],'keywords':['furniture','antique'],'type':'dosch'}
         coll.insert(pmrec) 
     X = tb.tabarray(SVfile = '../model_manifests/dosch_cats.csv')
-    for x in X
+    for x in X:
         rec = {'id':x['ID'],'name':x['ID'],'keywords':['feline','cat','animal'],'type':'dosch'}
         coll.insert(pmrec) 
     X = tb.tabarray(SVfile = '../model_manifests/dosch_clothing_items.csv')
-    for x in X
+    for x in X:
         rec = {'id':x['ID'],'name':x['ID'],'keywords':['household','clothing accessory'],'type':'dosch'}
         coll.insert(pmrec)
     X = tb.tabarray(SVfile = '../model_manifests/dosch_dogs.csv')
-    for x in X
+    for x in X:
         rec = {'id':x['ID'],'name':x['ID'],'keywords':['canine','dog','animal'],'type':'dosch'}
         coll.insert(pmrec)       
     X = tb.tabarray(SVfile = '../model_manifests/dosch_mammals.csv')
-    for x in X
+    for x in X:
         rec = {'id':x['ID'],'name':x['ID'],'keywords':['mammal','animal'],'type':'dosch'}
         coll.insert(pmrec)         
     X = tb.tabarray(SVfile = '../model_manifests/dosch_mens_clothing.csv')
-    for x in X
+    for x in X:
         rec = {'id':x['ID'],'name':x['ID'],'keywords':['mens clothing','clothing'],'type':'dosch'}
         coll.insert(pmrec)   
     X = tb.tabarray(SVfile = '../model_manifests/dosch_reptiles.csv')
-    for x in X
+    for x in X:
         rec = {'id':x['ID'],'name':x['ID'],'keywords':['reptile','animal'],'type':'dosch'}
         coll.insert(pmrec) 
     X = tb.tabarray(SVfile = '../model_manifests/dosch_ships.csv')
-    for x in X
+    for x in X:
         rec = {'id':x['ID'],'name':x['ID'],'keywords':['ship','transportation','boat'],'type':'dosch'}
         coll.insert(pmrec)   
     X = tb.tabarray(SVfile = '../model_manifests/dosch_womens_clothing.csv')
-    for x in X
+    for x in X:
         rec = {'id':x['ID'],'name':x['ID'],'keywords':['womens clothing','clothing'],'type':'dosch'}
         coll.insert(pmrec)           
         
