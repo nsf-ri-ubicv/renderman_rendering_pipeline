@@ -57,7 +57,7 @@ def mtl_fixer(path,model_id,libpath):
     F = F.replace("C:\\Program Files\\Autodesk\\3ds Max 2011\\maps\\Backgrounds\\",'')
     F = F.replace("C:\\Program Files\\Autodesk\\3ds Max 2011\\maps\\Reflection\\",'')
     
-    D = uniqify([x.group() for x in STRING_PATTERN.finditer(s)])
+    D = uniqify([x.group() for x in STRING_PATTERN.finditer(F)])
     for d in D:
         F = F.replace(d, ' ' + os.path.join(libpath,d.strip()))
     
