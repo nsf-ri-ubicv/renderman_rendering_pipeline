@@ -1,0 +1,7 @@
+export PATH=/opt/bin:$PATH
+
+export LD_LIBRARY_PATH=/opt/boost_1_43/lib
+
+source /usr/local/3delight-9.0.97/.3delight_bash 
+
+export PYTHONPATH=/home/render/renderman_rendering_pipeline
