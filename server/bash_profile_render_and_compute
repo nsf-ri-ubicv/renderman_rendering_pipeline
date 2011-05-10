@@ -1,3 +1,5 @@
+export EDITOR=emacs
+
 export PATH=/opt/bin:$PATH
 
 export LD_LIBRARY_PATH=/opt/boost_1_43/lib
