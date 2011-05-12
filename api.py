@@ -32,7 +32,7 @@ class App(tornado.web.Application):
                     (r"/render",RenderHandler),
                     (r"/renderq",QsubRenderHandler),
                     (r"/db/([\S]+)/([\S]+)",DataHandler),
-                    (r"/file/([\S]+)/([\S]+)",FileHandler),
+                    (r"/file/([\S]+)/([\S]+)/([\S]+)",FileHandler),
                     (r"/dicarlocox-3dmodels-v1/(.*)",
                                                 tornado.web.StaticFileHandler,
                                                 {'path':os.path.join(os.path.dirname(__file__), 
