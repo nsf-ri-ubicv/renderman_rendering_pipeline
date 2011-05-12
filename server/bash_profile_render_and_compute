@@ -1,6 +1,6 @@
 export EDITOR=emacs
 
-export PATH=/opt/bin:$PATH
+export PATH=/usr/local/cuda/bin:/usr/local/cuda/computeprof/bin:/usr/local/cuda/open64/bin:/opt/bin:$PATH
 
 export LD_LIBRARY_PATH=/opt/boost_1_43/lib
 

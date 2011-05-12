@@ -27,14 +27,16 @@ class App(tornado.web.Application):
         Tornado app which serves the API.
     """
     def __init__(self,ioloop):
-        handlers = [(r"/models",ModelHandler),
+        handlers = [(r"/3dmodels",ThreeDModelHandler),
                     (r"/backgrounds",BackgroundHandler),
                     (r"/render",RenderHandler),
                     (r"/renderq",QsubRenderHandler),
+                    (r"/db/([\S]+)/([\S]+)",DataHandler),
+                    (r"/file/([\S]+)/([\S]+)",FileHandler),
                     (r"/dicarlocox-3dmodels-v1/(.*)",
-                     tornado.web.StaticFileHandler,
-                     {'path':os.path.join(os.path.dirname(__file__), "dicarlocox-3dmodels-v1")}
-                    )
+                                                tornado.web.StaticFileHandler,
+                                                {'path':os.path.join(os.path.dirname(__file__), 
+                                                "dicarlocox-3dmodels-v1")})
                    ]
         settings = dict(debug=True,io_loop=ioloop)
         tornado.web.Application.__init__(self, handlers, **settings)
@@ -92,12 +94,29 @@ def getQuerySequence(args):
         
     return querySequence
 
-    
+
+import gridfs
+class FileHandler(tornado.web.RequestHandler):
+    def get(self,dbname,fsname,filename):
+        connection = pm.Connection()
+        db = self.connection[dbname]
+        fs = gridfs.GridFS(db,fsname)
+        fh = fs.get_version(filename)
+        s = fh.read()
+        fh.close()
+
+        self.set_header("Content-Type", "x-gzip")
+        self.set_header("Content-Disposition", "attachment; filename="+filename)
+        self.write(s)
+        
+
 class MongoDBHandler(tornado.web.RequestHandler):
     """
         base handler for mongodb access. 
     """
-    def get(self):
+    def get(self,*args):
+    
+        self.get_connected(*args)
 
         args = self.request.arguments
         for k in args.keys():
@@ -109,7 +128,7 @@ class MongoDBHandler(tornado.web.RequestHandler):
         
         querySequence = getQuerySequence(args)     
         
-        c = self.COLL        
+        c = self.collection       
         for (a,[pos,kw]) in querySequence:
             c = getattr(c,a)(*pos,**kw)    
         if isinstance(c,pm.cursor.Cursor):
@@ -122,17 +141,26 @@ class MongoDBHandler(tornado.web.RequestHandler):
         self.write(json.dumps(resp,default = json_util.default))   
         if callback:
             self.write(')')    
+
+
+class DataHandler(MongoDBHandler):    
+    
+    def get_connected(self,dbname,colname):
+        self.connection = pm.Connection()
+        self.db = self.connection[dbname]
+        self.collection = self.db[colname]          
     
     
-class ModelHandler(MongoDBHandler):
+class ThreeDModelHandler(MongoDBHandler):
     """
         DB handler for model DB
-        This handler is accessible via get requests on localhost:9999/models?
+        This handler is accessible via get requests on localhost:9999/3dmodels?
     """
     
-    CONN = pm.Connection()
-    DB = CONN['dicarlocox_3dmodels']
-    COLL = DB['3ds_test_images']  
+    def get_connected(self):
+        self.connection = pm.Connection()
+        self.db = self.connection['dicarlocox_3dmodels']
+        self.collection = self.db['3ds_test_images']  
         
         
 class BackgroundHandler(MongoDBHandler):
@@ -141,9 +169,10 @@ class BackgroundHandler(MongoDBHandler):
         This handler is accessible via get requests on localhost:9999/backgrounds?
     """
     
-    CONN = pm.Connection()
-    DB = CONN['dicarlocox_3dmodels']
-    COLL = DB['3d_spherical_backgrounds'] 
+    def get_connected(self):
+        self.connection = pm.Connection()
+        self.db = self.connection['dicarlocox_3dmodels']
+        self.collection = self.db['3d_spherical_backgrounds'] 
     
   
 
