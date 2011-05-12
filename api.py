@@ -103,7 +103,6 @@ class FileHandler(tornado.web.RequestHandler):
         fs = gridfs.GridFS(db,fsname)
         fh = fs.get_version(filename)
         s = fh.read()
-        fh.close()
 
         self.set_header("Content-Type", "x-gzip")
         self.set_header("Content-Disposition", "attachment; filename="+filename)
