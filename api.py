@@ -99,7 +99,7 @@ import gridfs
 class FileHandler(tornado.web.RequestHandler):
     def get(self,dbname,fsname,filename):
         connection = pm.Connection()
-        db = self.connection[dbname]
+        db = connection[dbname]
         fs = gridfs.GridFS(db,fsname)
         fh = fs.get_version(filename)
         s = fh.read()
