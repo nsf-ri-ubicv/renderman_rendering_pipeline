@@ -65,11 +65,11 @@ def getQuerySequence(args):
     
         action = args.pop('action','find')
         
-        assert action in ['find','find_one','count','distinct']
+        assert action in ['find','find_one','count','distinct','limit','skip']
     
         posargs = ()
         kargs = {}
-        if action in ['find','find_one']:
+        if action in ['find','find_one','limit','skip']:
             posargs = (json.loads(args.pop('query','{}')),)
             fields = args.pop('fields',None)
             if fields:
