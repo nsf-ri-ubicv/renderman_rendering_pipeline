@@ -96,7 +96,7 @@ def getQuerySequence(args):
             querySequence.append({'action':'skip','args':(skip,)})
         limit = args.get('limit')
         if limit:
-            querySequence.append({'action':'limit','args':(limit,)})
+            querySequence.append({'action':'limit','args':(int(limit),)})
            
         
     else:
