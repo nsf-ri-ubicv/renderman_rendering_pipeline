@@ -63,7 +63,7 @@ def getQuerySequence(args):
     
     if querySequence is None:
                 
-        field = args.pop('distinct')
+        field = args.pop('distinct',None)
         if field:
             action = 'distinct'
         else:
