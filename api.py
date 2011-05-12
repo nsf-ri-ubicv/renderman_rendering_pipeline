@@ -62,20 +62,24 @@ def getQuerySequence(args):
     querySequence = args.pop('querySequence',None)
     
     if querySequence is None:
-    
-        action = args.pop('action','find')
+                
+        field = args.pop('distinct')
+        if field:
+            action = 'distinct'
+        else:
+            action = args.pop('action','find')
         
-        assert action in ['find','find_one','count','distinct','limit','skip']
+        assert action in ['find','find_one','count','distinct']
     
         posargs = ()
         kargs = {}
-        if action in ['find','find_one','limit','skip']:
+        if action in ['find','find_one']:
             posargs = (json.loads(args.pop('query','{}')),)
             fields = args.pop('fields',None)
             if fields:
                 kargs['fields'] = json.loads(fields)
         elif action == 'distinct':
-            posargs = (args.pop('field'),)
+            posargs = (field or args.pop('field'),)
         else:
             posargs = ()
         
@@ -84,8 +88,17 @@ def getQuerySequence(args):
             actionDict['args'] = posargs
         if kargs:
             actionDict['kargs'] = kargs
-            
+        
         querySequence = [actionDict]
+        
+        skip = args.pop('skip')
+        if skip:
+            querySequence.append({'action':'skip','args':(skip,)})
+        limit = args.pop('limit'):
+        if limit:
+            querySequence.append({'action':'limit','args':(limit,)})
+           
+        
     else:
         querySequence = json.loads(querySequence)
         
