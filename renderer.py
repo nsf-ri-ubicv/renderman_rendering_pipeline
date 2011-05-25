@@ -59,7 +59,14 @@ def mtl_fixer(path,model_id,libpath):
     
     D = uniqify([x.group() for x in STRING_PATTERN.finditer(F)])
     for d in D:
-        F = F.replace(d, ' ' + os.path.join(libpath,d.strip()))
+        d = d.strip()
+        [base,ext] = os.path.splitext(d)
+        oldpath = os.path.join(libpath,base + ext)
+        ext = ext.lower()
+        newpath = os.path.join(libpath,base + ext)
+        F = F.replace(d, ' ' + newpath)
+        if oldpath != newpath:
+            os.system('mv ' + oldpath + ' ' newpath)
     
     f = open(path,'w')
     f.write(F)
