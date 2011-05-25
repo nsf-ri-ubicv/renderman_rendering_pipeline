@@ -66,7 +66,7 @@ def mtl_fixer(path,model_id,libpath):
         newpath = os.path.join(libpath,base + ext)
         F = F.replace(d, ' ' + newpath)
         if oldpath != newpath:
-            os.system('mv ' + oldpath + ' ' newpath)
+            os.system('mv ' + oldpath + ' ' + newpath)
     
     f = open(path,'w')
     f.write(F)
