@@ -68,8 +68,8 @@ def mtl_fixer(path,model_id,libpath):
         F = F.replace(d, ' ' + newpath)
         [dir,fname] = os.path.split(newpath)
         L = os.listdir(dir)
-        op = [os.path.join(dir,l) for l in L if l.lower() == fname][0]
         print(op,newpath)
+        op = [os.path.join(dir,l) for l in L if l.lower() == fname][0]
         if op != newpath:
             os.system('mv ' + op + ' ' + newpath)
     
