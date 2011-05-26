@@ -57,13 +57,13 @@ def mtl_fixer(path,model_id,libpath):
     F = open(path).read()
     D = uniqify([x.group() for x in ad_pattern.finditer(F)])
     for d in D:
-        F = F.replace(d,d.split('\\')[-1])
+        F = F.replace(d,d.split('\\')[-1].split('/')[-1])
     D = uniqify([x.group() for x in ad_pattern2.finditer(F)])
     for d in D:
-        F = F.replace(d,d.split('\\')[-1])   
+        F = F.replace(d,d.split('\\')[-1].split('/')[-1])   
     D = uniqify([x.group() for x in STRING_PATTERN.finditer(F)])
     for d in D:
-        d = d.split('/')[-1].strip()
+        d = d.strip()
         [base,ext] = os.path.splitext(d)
         oldpath = os.path.join(libpath,base + ext)
         print(libpath,base,ext)
@@ -71,7 +71,7 @@ def mtl_fixer(path,model_id,libpath):
         newpath = os.path.join(libpath,base + ext)
         print(libpath,base,ext)
         print(F)
-        F = F.replace(d, base + ext)
+        F = F.replace(d,newpath)
         print(F)
         [dir,fname] = os.path.split(newpath)
         L = os.listdir(dir)
