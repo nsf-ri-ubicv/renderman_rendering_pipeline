@@ -63,7 +63,7 @@ def mtl_fixer(path,model_id,libpath):
         F = F.replace(d,d.split('\\')[-1])   
     D = uniqify([x.group() for x in STRING_PATTERN.finditer(F)])
     for d in D:
-        d = d.strip()
+        d = d.split('/')[-1].strip()
         [base,ext] = os.path.splitext(d)
         oldpath = os.path.join(libpath,base + ext)
         print(libpath,base,ext)
