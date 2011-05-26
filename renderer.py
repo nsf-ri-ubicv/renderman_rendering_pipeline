@@ -50,19 +50,18 @@ def params_to_id(p):
 
    
 STRING_PATTERN = re.compile(' [\S]+.(jpg|JPG|bmp|BMP|tif|TIF|tiff|TIFF|png|PNG)')
-ad_pattern = re.compile(r"C:\\Program Files\\Autodesk\\3ds Max 2011\\maps\\([\S]*)\\")
-ad_pattern2 = re.compile(r"C:\\My 3D Models\\([\S]*)\\")
+ad_pattern = re.compile(r"C:\\Program Files\\Autodesk\\3ds Max 2011\\maps\\([\S]+)")
+ad_pattern2 = re.compile(r"C:\\My 3D Models\\([\S]+)")
 
 def mtl_fixer(path,model_id,libpath):
     F = open(path).read()
-    F = ad_pattern.sub('',F)
-    F = ad_pattern2.sub('',F)
-    #F = F.replace("C:\\My 3D Models\\" + model_id + "\\\\",'')
-    #F = F.replace("C:\\Program Files\\Autodesk\\3ds Max 2011\\maps\\Backgrounds\\",'')
-    #F = F.replace("C:\\Program Files\\Autodesk\\3ds Max 2011\\maps\\Reflection\\",'')
-    #F = F.replace("C:\\Program Files\\Autodesk\\3ds Max 2011\\maps\\Concrete\\",'')
-    
-    
+    D = uniqify([x.group() for x in ad_pattern.finditer(F)])
+    for d in D:
+        F = F.replace(d,d.split('\\')[-1])
+    D = uniqify([x.group() for x in ad_pattern2.finditer(F)])
+    for d in D:
+        F = F.replace(d,d.split('\\')[-1])
+        
     D = uniqify([x.group() for x in STRING_PATTERN.finditer(F)])
     for d in D:
         d = d.strip()
