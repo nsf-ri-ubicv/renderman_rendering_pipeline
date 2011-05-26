@@ -83,7 +83,7 @@ for params in MODEL_PARAM_LIST:
             print("Rescaling bump map for part %s" % part.name)
             mat = part.getMaterial()
             if mat.map_Bump is not None:
-                mat.map_Bump.bumpsize *= 0
+                mat.map_Bump.bumpsize *= scaling
         
     RYZ = params['ryz']
     RXZ = params['rxz']
