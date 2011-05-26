@@ -61,7 +61,7 @@ def mtl_fixer(path,model_id,libpath):
     D = uniqify([x.group() for x in ad_pattern2.finditer(F)])
     for d in D:
         F = F.replace(d,d.split('\\')[-1])
-        
+    print(F)    
     D = uniqify([x.group() for x in STRING_PATTERN.finditer(F)])
     for d in D:
         d = d.strip()
