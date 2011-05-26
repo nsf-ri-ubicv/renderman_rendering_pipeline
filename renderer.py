@@ -55,15 +55,12 @@ ad_pattern2 = re.compile(r"C:\\My 3D Models\\([\S]+)")
 
 def mtl_fixer(path,model_id,libpath):
     F = open(path).read()
-    print(F)
-    print('---------')
     D = uniqify([x.group() for x in ad_pattern.finditer(F)])
     for d in D:
         F = F.replace(d,d.split('\\')[-1])
     D = uniqify([x.group() for x in ad_pattern2.finditer(F)])
     for d in D:
-        F = F.replace(d,d.split('\\')[-1])
-    print(F)    
+        F = F.replace(d,d.split('\\')[-1])   
     D = uniqify([x.group() for x in STRING_PATTERN.finditer(F)])
     for d in D:
         d = d.strip()
@@ -75,7 +72,6 @@ def mtl_fixer(path,model_id,libpath):
         F = F.replace(d, ' ' + newpath)
         [dir,fname] = os.path.split(newpath)
         L = os.listdir(dir)
-        print(newpath)
         op = [os.path.join(dir,l) for l in L if l.lower() == fname][0]
         if op != newpath:
             os.system('mv ' + op + ' ' + newpath)
