@@ -65,7 +65,7 @@ def getQuerySequence(args):
         
         querySequence = []
         if args.get('query'):
-           d = {'action':'find','args':(json.loads(args.get['query']),)}
+           d = {'action':'find','args':(json.loads(args['query']),)}
            querySequence.append(d)
         
         field = args.get('distinct')
