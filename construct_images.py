@@ -80,7 +80,7 @@ def add_canonical_angles():
     coll = db['3ds_test_images']
 
     for (x,a,b,c) in ANGLES:
-        coll.update({'id':x},{'$set':{'canonical_view':{'rxy':a,'rxz':b,'ryz':c}})
+        coll.update({'id':x},{'$set':{'canonical_view':{'rxy':a,'rxz':b,'ryz':c}}})
 
   
 import tabular as tb
