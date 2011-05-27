@@ -64,9 +64,7 @@ def getQuerySequence(args):
     if querySequence is None:
         
         querySequence = []
-        if args.get('query'):
-           d = {'action':'find','args':(json.loads(args['query']),)}
-           querySequence.append(d)
+
         
         field = args.get('distinct')
         if field:
@@ -83,10 +81,15 @@ def getQuerySequence(args):
             fields = args.get('fields',None)
             if fields:
                 kargs['fields'] = json.loads(fields)
-        elif action == 'distinct':
-            posargs = (field or args['field'],)
         else:
-            posargs = ()
+            if args.get('query'):
+               d = {'action':'find','args':(json.loads(args['query']),)}
+            querySequence.append(d)
+        
+            if action == 'distinct':
+                posargs = (field or args['field'],)
+            else:
+                posargs = ()
         
         actionDict = {'action' : action}
         if posargs:
