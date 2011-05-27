@@ -62,7 +62,12 @@ def getQuerySequence(args):
     querySequence = args.pop('querySequence',None)
     
     if querySequence is None:
-                
+        
+        querySequence = []
+        if args.get('query'):
+           d = {'action':'find','args':(json.loads(args.get['query']),)}
+           querySequence.append(d)
+        
         field = args.get('distinct')
         if field:
             action = 'distinct'
@@ -89,7 +94,7 @@ def getQuerySequence(args):
         if kargs:
             actionDict['kargs'] = kargs
         
-        querySequence = [actionDict]
+        querySequence.append(actionDict)
         
         skip = args.get('skip')
         if skip:
