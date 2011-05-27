@@ -83,8 +83,8 @@ def getQuerySequence(args):
                 kargs['fields'] = json.loads(fields)
         else:
             if args.get('query'):
-               d = {'action':'find','args':(json.loads(args['query']),)}
-            querySequence.append(d)
+                d = {'action':'find','args':(json.loads(args['query']),)}
+                querySequence.append(d)
         
             if action == 'distinct':
                 posargs = (field or args['field'],)
