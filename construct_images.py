@@ -72,6 +72,16 @@ def create_mongodb(depends_on = '../ModelBankLibrary.db', creates = '../certific
         coll.insert(rec)           
         
     createCertificate(creates,'made it')
+
+from canonical_angles import ANGLES
+def add_canonical_angles():
+    conn = pm.Connection()
+    db = conn['dicarlocox_3dmodels']
+    coll = db['3ds_test_images']
+
+    for (x,a,b,c) in ANGLES:
+        coll.update({'id':x},{'$set':{'canonical_view':{'rxy':a,'rxz':b,'ryz':c}})
+
   
 import tabular as tb
 
