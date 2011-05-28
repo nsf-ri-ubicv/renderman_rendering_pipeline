@@ -13,8 +13,7 @@ import boto
 
 from starflow.utils import uniqify
 
-import scene_template
-import scene_template_point
+import scene_templates
 
 MODEL_DIR = 'MODELS'
 BG_DIR = 'BACKGROUNDS'
@@ -162,9 +161,10 @@ def render_single_image(mbucket,
         p['tx'] = p.get('tx', TX_DEFAULT)
         p['ty'] = p.get('ty', TY_DEFAULT)
         p['tz'] = p.get('tz', TZ_DEFAULT)
-        p['rxy'] = p.get('rxy', RXY_DEFAULT)
-        p['rxz'] = p.get('rxz', RXZ_DEFAULT)
-        p['ryz'] = p.get('ryz', RYZ_DEFAULT)
+        if not 'rotations' in p:			
+			p['rxy'] = p.get('rxy', RXY_DEFAULT)
+			p['rxz'] = p.get('rxz', RXZ_DEFAULT)
+			p['ryz'] = p.get('ryz', RYZ_DEFAULT)
         p['sx'] = p.get('sx', SX_DEFAULT)
         p['sy'] = p.get('sy', SY_DEFAULT)
         p['sz'] = p.get('sz', SZ_DEFAULT)
@@ -195,7 +195,7 @@ def render_single_image(mbucket,
     model_param_string = repr(model_params)
     
     if pointsource_params is not None:
-        tmpl = Template(scene_template_point.TEMPLATE)
+        tmpl = Template(scene_templates.SCENE_TEMPLATE_POINT)
         
         point_light_param_string = process_param_dict(pointsource_params)
         
@@ -209,7 +209,7 @@ def render_single_image(mbucket,
              }
         
     else:
-        tmpl = Template(scene_template.TEMPLATE)
+        tmpl = Template(scene_templates.SCENE_TEMPLATE)
                
         pdict = {'KENV' : kenv, 
              'ENVMAP':bg_file,

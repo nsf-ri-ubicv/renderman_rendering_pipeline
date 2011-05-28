@@ -1,4 +1,4 @@
-TEMPLATE = """
+SCENE_SETUP = """
 import numpy
 import cgkit.ri as ri
 
@@ -33,9 +33,9 @@ TargetCamera(
     fstop = 0.3,
     fov = 90.,
 )
+"""
 
-GLPointLight($POINT_LIGHT_PARAM_STRING)
-
+SCENE_BASE = """
 old_parts = []
 
 MODEL_PARAM_LIST = $MODEL_PARAM_STRING
@@ -83,37 +83,50 @@ for params in MODEL_PARAM_LIST:
             mat = part.getMaterial()
             if mat.map_Bump is not None:
                 mat.map_Bump.bumpsize *= scaling
-        
-    RYZ = params['ryz']
-    RXZ = params['rxz']
-    RXY = params['rxy']
+    
+    if 'rotations' in params:
+        ROTATIONS = params['rotations']
+    else:
+		ROTATIONS = [{'rxy':params['rxy'],'rxz':params['rxz'],'ryz':params['ryz']}]
+    
     TX = params['tx']
     TY = params['ty']
     TZ = params['tz']
+    
     SX = params['sx']
     SY = params['sy']
     SZ = params['sz']
-    
     SX = SX*scaling
     SY = SY*scaling
     SZ = SZ*scaling
-
+    
     b1 = map(min,zip(*[part.boundingBox().getBounds()[0] for part in new_parts if part.geom is not None]))
     b2 = map(max,zip(*[part.boundingBox().getBounds()[1] for part in new_parts if part.geom is not None]))
     bbox = [tuple(b1),tuple(b2)]
     bboxes.append(bbox)
-
+    
     DX = (bbox[1][0] + bbox[0][0])/2
     DY = (bbox[1][1] + bbox[0][1])/2
     DZ = (bbox[1][2] + bbox[0][2])/2
-        
-        
+    
     for part in new_parts:
         if part.geom is not None: 
-            part.setOffsetTransform(mat4().translation(vec3(DX,DY,DZ)).scale(vec3(1/SX,1/SY,1/SZ)).rotate(RXZ,vec3(0,1,0)).rotate(RXY,vec3(0,0,1)).translate(vec3(TX,TY,TZ)))
+            Trans = mat4().translation(vec3(DX,DY,DZ)).scale(vec3(1/SX,1/SY,1/SZ))
+            for rot in ROTATIONS:
+                Trans.rotate(rot['ryz'],vec3(1,0,0)).rotate(rot['rxz'],vec3(0,1,0)).rotate(rot['rxy'],vec3(0,0,1))
+            Trans.translate(vec3(TX,TY,TZ))
+            part.setOffsetTransform(Trans)
             part.transform = mat4().rotation(phi,vec3(0,0,1)).rotate(-psi,vec3(0,1,0))
             
-        
-
 
 """
+
+SCENE_TEMPLATE = SCENE_SETUP + """
+S = RMShader("envlight2",params={"float samples":32,"string envmap":"$ENVMAP","float Kenv":$KENV,"float Kocc":0})
+RMLightSource(shader=S)
+"""  + SCENE_BASE
+
+
+SCENE_TEMPLATE_POINT = SCENE_SETUP + """
+GLPointLight($POINT_LIGHT_PARAM_STRING)
+""" + SCENE_BASE
