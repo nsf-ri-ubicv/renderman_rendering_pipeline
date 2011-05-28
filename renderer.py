@@ -165,6 +165,12 @@ def render_single_image(mbucket,
 			p['rxy'] = p.get('rxy', RXY_DEFAULT)
 			p['rxz'] = p.get('rxz', RXZ_DEFAULT)
 			p['ryz'] = p.get('ryz', RYZ_DEFAULT)
+		else:
+		    for rot in p['rotations']:
+		        rot['rxy'] = r.get('rxy',RXY_DEFAULT)
+		        rot['rxz'] = r.get('rxz',RXZ_DEFAULT)
+		        rot['ryz'] = r.get('ryz',RYZ_DEFAULT)
+		        
         p['sx'] = p.get('sx', SX_DEFAULT)
         p['sy'] = p.get('sy', SY_DEFAULT)
         p['sz'] = p.get('sz', SZ_DEFAULT)
