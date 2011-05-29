@@ -107,11 +107,13 @@ def make_background_db( creates = '../background_certificate.txt',depends_on=('.
     for rec in recs:
         coll.insert(rec)
         
-        
     X = tb.tabarray(SVfile = depends_on[1])
     recs = [{'name':x['Path'][:-4],'path':x['Path'],'type':'2d grayscale'} for x in X]
     for rec in recs:
-        coll.insert(rec)        
+        coll.insert(rec) 
+        
+    rec = {'name':'blank gray image','path':'gray.td','type':'blank'}
+    coll.insert(rec)
         
 if __name__ == '__main__':
     if not os.path.exists('Temp'):  
