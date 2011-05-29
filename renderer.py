@@ -171,9 +171,15 @@ def render_single_image(mbucket,
                 rot['rxz'] = rot.get('rxz',RXZ_DEFAULT)
                 rot['ryz'] = rot.get('ryz',RYZ_DEFAULT)
                 
-        p['sx'] = p.get('sx', SX_DEFAULT)
-        p['sy'] = p.get('sy', SY_DEFAULT)
-        p['sz'] = p.get('sz', SZ_DEFAULT)
+        if 's' in p:
+            p['sx'] = p['s']
+            p['sy'] = p['s']
+            p['sz'] = p['s']
+            p.pop('s')
+        else:
+            p['sx'] = p.get('sx', SX_DEFAULT)
+            p['sy'] = p.get('sy', SY_DEFAULT)
+            p['sz'] = p.get('sz', SZ_DEFAULT)
  
     params = {'bg_id':bg_id,'bg_phi': bg_phi, 'bg_psi':bg_psi, 'model_params':model_params,'kenv':kenv} 
     ID_STRING = params_to_id(params)
