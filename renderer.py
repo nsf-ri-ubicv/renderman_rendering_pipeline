@@ -224,7 +224,7 @@ def render_single_image(mbucket,
              'BACKGROUND' : bg_file,
              'PHI' : bg_phi,
              'PSI' : bg_psi,
-             'OUTFILE' : outfile,
+             'OUTFILE' : out_file,
              'MODEL_PARAM_STRING' : model_paramstring}
            
              
