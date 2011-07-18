@@ -225,7 +225,7 @@ def render_single_image(mbucket,
              'PHI' : bg_phi,
              'PSI' : bg_psi,
              'OUTFILE' : out_file,
-             'MODEL_PARAM_STRING' : model_paramstring}
+             'MODEL_PARAM_STRING' : model_param_string}
            
              
     if pointsource_params is not None:
