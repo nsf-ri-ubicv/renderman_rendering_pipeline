@@ -238,6 +238,11 @@ require(["jquery","jquery.address","underscore"],
                     params["bg_psi"] = parseFloat(psi);
                 }  
                 
+                var res = $("#res input").val();
+                if (res !== ""){
+                    params["res_x"] = parseFloat(res);
+                    params["res_y"] = parseFloat(res);
+                }  
                  
                 var params_list = [params];
                 var params_string = JSON.stringify(params_list);
