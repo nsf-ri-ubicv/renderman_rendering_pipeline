@@ -4,7 +4,7 @@ import cgkit.ri as ri
 
 
 Globals(
-    resolution = (512, 512),
+    resolution = ($RES_X, $RES_Y),
     pixelsamples = (16,16),
     output = "$OUTFILE",
     displaymode = "rgba",

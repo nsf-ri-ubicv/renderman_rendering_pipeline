@@ -29,6 +29,7 @@ SY_DEFAULT = 1
 SZ_DEFAULT = 1
 BG_ANGLE_DEFAULT = (0,0)
 KENV_DEFAULT = 8
+RES_DEFAULT = 512
 
 def new_val(x):
     if isinstance(x,dict):
@@ -109,6 +110,8 @@ def render_single_image_qsub(out_dir,picklefile):
     kenv = C.get('kenv',KENV_DEFAULT)
     bg_phi = C.get('bg_phi',BG_ANGLE_DEFAULT[0])
     bg_psi = C.get('bg_psi',BG_ANGLE_DEFAULT[1])
+    res_x = C.get('res_x',RES_DEFAULT)
+    res_y = C.get('res_y',RES_DEAFULT)
     
     render_single_image(mbucket, 
                         bbucket,
@@ -117,13 +120,17 @@ def render_single_image_qsub(out_dir,picklefile):
                         model_params,
                         kenv = kenv,
                         bg_phi = bg_phi,
-                        bg_psi = bg_psi) 
+                        bg_psi = bg_psi,
+                        res_x = res_x,
+                        res_y = res_y) 
 
 
 def render_single_image_queue(out_dir,
                         bg_id,
                         model_params,
                         kenv = KENV_DEFAULT,
+                        res_x = RES_DEFAULT,
+                        res_y = RES_DEFAULT,
                         bg_phi = BG_ANGLE_DEFAULT[0],
                         bg_psi = BG_ANGLE_DEFAULT[1]):
 
@@ -137,7 +144,9 @@ def render_single_image_queue(out_dir,
                         model_params,
                         kenv = kenv,
                         bg_phi = bg_phi,
-                        bg_psi = bg_psi) 
+                        bg_psi = bg_psi,
+                        res_x = res_x,
+                        res_y = res_y) 
     
     
 def render_single_image(mbucket, 
@@ -148,6 +157,8 @@ def render_single_image(mbucket,
                         kenv = KENV_DEFAULT,
                         bg_phi = BG_ANGLE_DEFAULT[0],
                         bg_psi = BG_ANGLE_DEFAULT[1],
+                        res_x = RES_DEFAULT,
+                        res_y = RES_DEFAULT,
                         pointsource_params=None):
 
     
@@ -181,7 +192,9 @@ def render_single_image(mbucket,
             p['sy'] = p.get('sy', SY_DEFAULT)
             p['sz'] = p.get('sz', SZ_DEFAULT)
  
-    params = {'bg_id':bg_id,'bg_phi': bg_phi, 'bg_psi':bg_psi, 'model_params':model_params,'kenv':kenv} 
+    params = {'bg_id':bg_id,'bg_phi': bg_phi, 'bg_psi':bg_psi, 
+              'model_params':model_params,'kenv':kenv, 
+              'res_x' : res_x, 'res_y' : res_y} 
     ID_STRING = params_to_id(params)
     out_file = os.path.abspath(os.path.join(out_dir,ID_STRING + '.tif'))
     
@@ -206,32 +219,24 @@ def render_single_image(mbucket,
 
     model_param_string = repr(model_params)
     
+    pdict = {'RES_X' : res_x,
+             'RES_Y' : res_y, 
+             'BACKGROUND' : bg_file,
+             'PHI' : bg_phi,
+             'PSI' : bg_psi,
+             'OUTFILE' : outfile,
+             'MODEL_PARAM_STRING' : model_paramstring}
+           
+             
     if pointsource_params is not None:
         tmpl = Template(scene_templates.SCENE_TEMPLATE_POINT)
-        
         point_light_param_string = process_param_dict(pointsource_params)
-        
-        pdict = {
-             'BACKGROUND':bg_file,
-             'PHI':bg_phi,
-             'PSI':bg_psi,
-             'OUTFILE': out_file,
-             'MODEL_PARAM_STRING': model_param_string,
-             'POINT_LIGHT_PARAM_STRING':point_light_param_string
-             }
-        
+        pdict['POINT_LIGHT_PARAM_STRING'] = point_light_param_string
     else:
         tmpl = Template(scene_templates.SCENE_TEMPLATE)
-               
-        pdict = {'KENV' : kenv, 
-             'ENVMAP':bg_file,
-             'BACKGROUND':bg_file,
-             'PHI':bg_phi,
-             'PSI':bg_psi,
-             'OUTFILE': out_file,
-             'MODEL_PARAM_STRING': model_param_string
-             }
-
+        pdict['KENV'] = kenv
+        pdict['ENVMAP'] = bg_file
+        
     make_dir = os.path.abspath(os.path.join(out_dir,'make_dir_' + ID_STRING))
     os.system('mkdir ' + make_dir)
     
@@ -275,64 +280,6 @@ def render(out_dir, params_list,callback=None):
         callback()
         
         
-def render_queue(out_dir, params_list,callback=None):
-
-    import drmaa
-    conn = boto.connect_s3()
-    bbucket = conn.get_bucket('dicarlocox-backgrounds')    
-    
-    bg_list = [x.name for x in bbucket.list()]
-    
-    Session = drmaa.Session()
-    Session.initialize()
-    
-    job_templates = []
-    for params in params_list:
-        params = params.copy();
-        bg_id = params.pop('bg_id',bg_list[np.random.randint(len(bg_list))])
-        model_params = params.pop('model_params')
-        jt = init_job_template(Session.createJobTemplate()
-,                         out_dir,
-                          bg_id,
-                          model_params,
-                          params.get('kenv',KENV_DEFAULT),
-                          params.get('bg_phi',BG_ANGLE_DEFAULT[0]),
-                          params.get('bg_psi',BG_ANGLE_DEFAULT[1])
-                          )
-        job_templates.append(jt)
-        
-    jobs = [Session.runJob(jt) for jt in job_templates]
-     
-    retvals = [Session.wait(job,drmaa.Session.TIMEOUT_WAIT_FOREVER) for job in jobs]
-
-    Session.exit()
-                        
-    if callback:
-        callback()
-  
-import os
-def init_job_template(jt,out_dir,bg_id,model_params,kenv,bg_phi,bg_psi):
-    jt.remoteCommand = 'python'
-    jt.workingDirectory = os.getcwd()
-
-    argstr = "import renderer as R; R.render_single_image_queue(" + repr(out_dir) + "," + repr(bg_id) + "," + repr(model_params) + ", kenv=" + repr(kenv) + ", bg_phi=" + repr(bg_phi) + ", bg_psi=" + repr(bg_psi) + ")"
-    jt.args = ["-c",argstr]
-    jt.joinFiles = True
-    jt.jobEnvironment = dict([(k,os.environ[k]) for k in ['PYTHONPATH',
-                                                          'PATH',
-                                                          'LD_LIBRARY_PATH',
-                                                          'DL_TEXTURES_PATH',
-                                                          'DELIGHT',
-                                                          'MAYA_SCRIPT_PATH',
-                                                          'INFOPATH',
-                                                          'MAYA_PLUG_IN_PATH',
-                                                          'DL_DISPLAYS_PATH',
-                                                          'DL_SHADERS_PATH']])
-    
-
-    return jt
-
-
 import copy, cPickle
 import hashlib
 import BeautifulSoup
