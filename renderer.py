@@ -81,6 +81,9 @@ def mtl_fixer(path,model_id,libpath):
             if op != newpath:
                 os.system('mv ' + op + ' ' + newpath)
         
+        f = open(fixed_path,'w')
+        f.write('fixed')
+        f.close()
         f = open(path,'w')
         f.write(F)
         f.close()
