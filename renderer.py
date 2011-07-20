@@ -54,32 +54,36 @@ ad_pattern = re.compile(r"C:\\Program Files\\Autodesk\\3ds Max 2011\\maps\\([\S]
 ad_pattern2 = re.compile(r"C:\\My 3D Models\\([\S]+)")
 
 def mtl_fixer(path,model_id,libpath):
-    F = open(path).read()
-    D = uniqify([x.group() for x in ad_pattern.finditer(F)])
-    for d in D:
-        F = F.replace(d,d.split('\\')[-1].split('/')[-1])
-    D = uniqify([x.group() for x in ad_pattern2.finditer(F)])
-    for d in D:
-        F = F.replace(d,d.split('\\')[-1].split('/')[-1])   
-    D = uniqify([x.group() for x in STRING_PATTERN.finditer(F)])
-    for d in D:
-        d = d.strip()
-        F = F.replace(d,d.split('/')[-1].strip())
-        d = d.split('/')[-1].strip()
-        [base,ext] = os.path.splitext(d)
-        oldpath = os.path.join(libpath,base + ext)
-        base = base.lower() ; ext = ext.lower()
-        newpath = os.path.join(libpath,base + ext)
-        F = F.replace(d,newpath)
-        [dir,fname] = os.path.split(newpath)
-        L = os.listdir(dir)
-        op = [os.path.join(dir,l) for l in L if l.lower() == fname][0]
-        if op != newpath:
-            os.system('mv ' + op + ' ' + newpath)
-    
-    f = open(path,'w')
-    f.write(F)
-    f.close()
+    [dirpath,filename] = os.path.split(path)
+    fixed_path = os.path.join(dirpath,'fixed')
+    if not os.path.exists(fixed_path):
+        
+        F = open(path).read()
+        D = uniqify([x.group() for x in ad_pattern.finditer(F)])
+        for d in D:
+            F = F.replace(d,d.split('\\')[-1].split('/')[-1])
+        D = uniqify([x.group() for x in ad_pattern2.finditer(F)])
+        for d in D:
+            F = F.replace(d,d.split('\\')[-1].split('/')[-1])   
+        D = uniqify([x.group() for x in STRING_PATTERN.finditer(F)])
+        for d in D:
+            d = d.strip()
+            F = F.replace(d,d.split('/')[-1].strip())
+            d = d.split('/')[-1].strip()
+            [base,ext] = os.path.splitext(d)
+            oldpath = os.path.join(libpath,base + ext)
+            base = base.lower() ; ext = ext.lower()
+            newpath = os.path.join(libpath,base + ext)
+            F = F.replace(d,newpath)
+            [dir,fname] = os.path.split(newpath)
+            L = os.listdir(dir)
+            op = [os.path.join(dir,l) for l in L if l.lower() == fname][0]
+            if op != newpath:
+                os.system('mv ' + op + ' ' + newpath)
+        
+        f = open(path,'w')
+        f.write(F)
+        f.close()
     
     
 def get_model(model_id,bucket):
