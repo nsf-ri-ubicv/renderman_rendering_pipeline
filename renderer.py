@@ -88,22 +88,63 @@ def mtl_fixer(path,model_id,libpath):
         f.write(F)
         f.close()
     
-    
-def get_model(model_id,bucket):
-    tmpdir = tempfile.mkdtemp()
-    k = bucket.get_key(model_id + '.tar.gz')
-    k.get_contents_to_filename(os.path.join(tmpdir,model_id + '.zip'))
-    os.system('cd ' + tmpdir + '; tar -xzvf ' + model_id + '.zip')
-    
-    if os.path.exists(os.path.join(tmpdir,model_id)):
-        path = os.path.join(tmpdir,model_id)
-    else:
-        path = os.path.join(tmpdir,'3dmodels',model_id)
-        
-    os.system('mv ' + path + ' ' + MODEL_DIR)
-    os.system('rm -rf ' + tmpdir)        
-              
+import time
 
+def get_background(bbucket,bg_id,bg_file):
+
+    lockfile = bg_file + '.lock'
+    locktime = .1
+    if not os.path.exists(bg_file):
+        f = open(lockfile,'w')
+        f.write('locked')
+        f.close()
+        print('getting background')
+        k = bbucket.get_key(bg_id)
+        k.get_contents_to_filename(bg_file) 
+        os.remove(lockfile)
+    elif os.path.exists(lockfile):
+        while True:
+            time.sleep(locktime)
+            if not os.path.exists(lockfile):
+                break
+
+def get_model(model_id,bucket,model_dir):
+
+    lockfile = os.path.join(model_dir,'lock')
+    locktime = .1
+    if not os.path.exists(model_dir):
+        print('getting model %s' % model_id)
+        os.makedirs(model_dir)
+        f = open(lockfile,'w')
+        f.write('locked')
+        f.close()
+        
+        mtl_path = os.path.abspath(os.path.join(model_dir,model_id + '.mtl')) 
+            
+        tmpdir = tempfile.mkdtemp()
+        k = bucket.get_key(model_id + '.tar.gz')
+        k.get_contents_to_filename(os.path.join(tmpdir,model_id + '.zip'))
+        os.system('cd ' + tmpdir + '; tar -xzvf ' + model_id + '.zip')
+        
+        if os.path.exists(os.path.join(tmpdir,model_id)):
+            path = os.path.join(tmpdir,model_id)
+        else:
+            path = os.path.join(tmpdir,'3dmodels',model_id)
+            
+        os.system('mv ' + path + '/* ' + model_dir)
+        os.system('rm -rf ' + tmpdir)     
+        
+        mtl_fixer( mtl_path,model_id,model_dir + '/')    
+        
+        os.remove(lockfile)
+
+    elif os.path.exists(lockfile):
+        while True:
+            time.sleep(locktime)
+            if not os.path.exists(lockfile):
+                break
+
+              
 def render_single_image_qsub(out_dir,picklefile):
                         
 
@@ -206,22 +247,14 @@ def render_single_image(mbucket,
     out_file = os.path.abspath(os.path.join(out_dir,ID_STRING + '.tif'))
     
     bg_file = os.path.abspath(os.path.join(BG_DIR,bg_id))
-    if not os.path.exists(bg_file):
-        print('getting background')
-        k = bbucket.get_key(bg_id)
-        k.get_contents_to_filename(bg_file) 
-     
+    
+    get_background(bbucket,bg_id,bg_file)
+         
     for p in model_params:
         model_id = p['model_id']
-        model_dir =  os.path.join(MODEL_DIR,model_id)
-        if not os.path.exists(model_dir):
-            print('getting model') 
-            get_model(model_id,mbucket) 
-                            
         model_dir = os.path.abspath(os.path.join(MODEL_DIR,model_id))
+        get_model(model_id,mbucket,model_dir) 
         obj_file = os.path.abspath(os.path.join(model_dir,model_id + '.obj'))
-        mtl_path = os.path.abspath(os.path.join(model_dir,model_id + '.mtl'))   
-        mtl_fixer( mtl_path,model_id,model_dir + '/')  
         p['obj_file'] = obj_file
 
     model_param_string = repr(model_params)
