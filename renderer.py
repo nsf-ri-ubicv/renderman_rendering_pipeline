@@ -57,7 +57,7 @@ def mtl_fixer(path,model_id,libpath):
     [dirpath,filename] = os.path.split(path)
     fixed_path = os.path.join(dirpath,'fixed')
     if not os.path.exists(fixed_path):
-        
+        print('fixing mtl path %s' % path)
         F = open(path).read()
         D = uniqify([x.group() for x in ad_pattern.finditer(F)])
         for d in D:
