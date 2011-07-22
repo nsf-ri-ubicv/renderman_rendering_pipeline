@@ -125,8 +125,8 @@ class FileHandler(tornado.web.RequestHandler):
         fh = fs.get_version(filename)
         s = fh.read()
 
-        self.set_header("Content-Type", "x-gzip")
-        self.set_header("Content-Disposition", "attachment; filename="+filename)
+        #self.set_header("Content-Type", "x-gzip")
+        #self.set_header("Content-Disposition", "attachment; filename="+filename)
         self.write(s)
         
 
