@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-	<title>Nuggets</title>
+	<title>Thor Nuggets</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link type="text/css" href="css/style.css" rel="stylesheet" />
 	<link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />	
@@ -89,22 +89,23 @@
 					});       
                    var grid;
 				   var columns = [
-						{id:"title", name:"Task", field:"title",width:160,sortable:true},
-						{id:"cat", name:"Category", field:"cat",width:120,sortable:true},
-						{id:"invariances", name:"Invariances", field:"invariances",width:120,sortable:true},
-						{id:"max", name:"Max", field:"max",formatter:HighlightFormatter,sortable:true},
-						{id:"min", name:"Min", field:"min",formatter:HighlightFormatter,sortable:true},
-						{id:"mean", name:"Mean", field:"mean",formatter:HighlightFormatter,sortable:true},
-						{id:"quartile", name:"75%tile", field:"quartile",formatter:HighlightFormatter,sortable:true,width:90},
-						{id:"std", name:"Std", field:"std",formatter:FloatCellFormatter,sortable:true}
+						{id:"title", name:"Task", field:"title",width:100,sortable:true},
+						{id:"cat", name:"Category", field:"cat",width:75,sortable:true},
+						{id:"invariances", name:"Invariances", field:"invariances",width:85,sortable:true},
+						{id:"max", name:"Max", field:"max",formatter:HighlightFormatter,sortable:true,width:60},
+						{id:"min", name:"Min", field:"min",formatter:HighlightFormatter,sortable:true,width:60},
+						{id:"mean", name:"Mean", field:"mean",formatter:HighlightFormatter,sortable:true,width:60},
+						{id:"quartile", name:"75%tile", field:"quartile",formatter:HighlightFormatter,sortable:true,width:75,width:60},
+						{id:"std", name:"Std", field:"std",formatter:FloatCellFormatter,sortable:true,width:50}
 				   ];
 				   var options = {
+				        rowHeight : 18, 
 						enableCellNavigation: false,
 						enableColumnReorder: false
 				   };
 				   $(function() {	
 				        dataView = new Slick.Data.DataView(); 
-				        grid = new Slick.Grid($("#myGrid"), dataView.rows, columns, options);
+				        grid = new Slick.Grid($("#grid1"), dataView.rows, columns, options);
 						grid.onSort = function(sortCol, sortAsc) {
 						    console.log('sorting')
 							sortdir = sortAsc ? 1 : -1;
@@ -153,11 +154,43 @@
     
 </head>
 <body>	
-<div class="nugget" id="nugget1">
-<div class="nuggetheader"> 1) Mixed up results. </div>
-<div class="nuggettext">This is a first nugget, about the result of mixing up categories.</div>
-<div id="myGrid" style="width:810px;height:500px;"></div>
+
+	<div id="header"> 
+	<ul> 
+	  <li id="logotext">
+	  Nuggets, baby.
+	  </li>
+	</ul> 
+  
+	</div>
+
+<div id="main">
+<div id="intro">
+On this page, we will describe some nuggets of wisdom about our wonderful and beautiful models.  <br/> <br/>
+Yes. 
 </div>
 
+<div class="nugget" id="nugget1">
+<div class="innernugget">
+<div class="nuggetheader"> 1) Mixed up categories. </div>
+<div class="nuggettext">This is a first nugget, about the result of mixing up categories.  Shown are test accuracy performance statistics
+for a bunch of two-level (gridded gabor/random) models.   There are three problems (the tenway problem, cars vs planes, 
+and furniture (chairs and tables) vs. animals (dogs and cats and reptiles) vs. vehicles (cars and boats and planes).  <br/><br/>
+The control task is the actual category, while the "mixed up" task is one where the 3dmodels in the category have been shuffled, e.g.
+cars vs planes becomes [one group of mixed cars and planes] vs [another random of cars and planes].<br/><br/>
+
+Results are further broken down by which invariances were used: All, meaning translation, scaling, and inplane and out-of-plane rotation; 
+translation only; and inplane rotation only.
+   
+</div>
+<div class="nuggetplot" id="grid1" style="width:550px;height:350px;"></div>
+<div class="nuggettext">The key thing to notice is that rotation is much harder than translation; and 
+that mixing up the categories has an effect.  (I will write more text later.)
+
+</div>
+</div>
+</div>
+
+</div>
 </body>
 </html>
