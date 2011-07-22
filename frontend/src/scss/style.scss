@@ -11,7 +11,6 @@ $searchbar-top-padding : 10px;
 
 body {
   background-color : $background-color;
-
   font-family: "liberation-serif-1", "liberation-serif-2";
 }
 
@@ -101,8 +100,14 @@ padding:10px;
 }
 
 .nugget{
-padding:20px;
+    padding:20px;
 }
+
+.nugget-header{
+    font-size:20px;
+    font-weight:bold; 
+}
+
 
 #searchbar input{
 	float:right;
@@ -157,9 +162,7 @@ padding:20px;
 	text-decoration: overline;
 }
 
-
-
-#logotext{
+body{
 	font-size:30px;
 	color : white;
 	font-family: "liberation-serif-1", "liberation-serif-2";
