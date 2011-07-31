@@ -2,7 +2,7 @@
         $(document).ready(function(){
             
             var hash = 'edb21a7bb8a822319213a2563b42ec720424a091';
-        
+            //var hash = '402d0408ee928f2612409f2b7ffc45eafdc70e5b';
             var qval = {"__hash__":hash}; 
 			var params = {"query":JSON.stringify(qval),"fields":JSON.stringify(["task.task_label","test_accuracy"])};
 
