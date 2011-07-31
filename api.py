@@ -72,7 +72,7 @@ def getQuerySequence(args):
         else:
             action = args.get('action','find')
         
-        assert action in ['find','find_one','count','distinct']
+        assert action in ['find','find_one','count','distinct',"group"]
     
         posargs = ()
         kargs = {}
@@ -81,6 +81,14 @@ def getQuerySequence(args):
             fields = args.get('fields',None)
             if fields:
                 kargs['fields'] = json.loads(fields)
+        elif action == "group":
+            query = json.loads(args['query'])
+            keys = json.loads(args['keys'])
+            initialize = json.loads(args['initialize'])
+            reduce = args['reduce']
+            finalize = args.get('finalize',None)
+            posargs = (keys,query,initialize,reduce)
+            kargs = {"finalize":finalize}
         else:
             if args.get('query'):
                 d = {'action':'find','args':(json.loads(args['query']),)}
