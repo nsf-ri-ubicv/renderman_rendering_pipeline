@@ -38,9 +38,12 @@
             var h = 200;
 		            
             var hash = '73a6f2263870c4a3cb44f0d4cdf3848f3de811ac';
+            var hash = 'fe3a9f56b840d0afbd50f3e383a944fd9302db4d';
         
-            var reptiles = ['MB30418', 'MB31192', 'MB29694', 'adder', 'boa', 'bullfrog', 'chameleon', 'crocodile', 'gecko', 'iguana', 'leatherback', 'terapin', 'tortoise', 'treefrog', 'salamander'];
-            var planes = ['MB26937', 'MB27203', 'MB27211', 'MB27309', 'MB27463', 'MB27876', 'MB27732', 'MB27530', 'MB28430', 'MB29650', 'MB28651', 'MB28243'];
+            //var reptiles = ['MB30418', 'MB31192', 'MB29694', 'adder', 'boa', 'bullfrog', 'chameleon', 'crocodile', 'gecko', 'iguana', 'leatherback', 'terapin', 'tortoise', 'treefrog', 'salamander'];
+            var reptiles = ['MB29694'];
+            //var planes = ['MB26937', 'MB27203', 'MB27211', 'MB27309', 'MB27463', 'MB27876', 'MB27732', 'MB27530', 'MB28430', 'MB29650', 'MB28651', 'MB28243'];
+            var planes = ['MB27530'];
             var things = reptiles.concat(planes);
             var qval = {"__hash__":hash,"image.bg_id":"gray.tdl","image.ryz":{"$exists":true},"image.model_id":{"$in":things}};
             var nseg = 10;
@@ -138,11 +141,12 @@
                     $('#plot').click(function(){
                         plot_num = (plot_num + 1 ) % result.length;
                         $('#plot .thing').remove();
-                        console.log("plotting model", plot_num );
+                        console.log("plotting model", plot_num,models[plot_num]['layers'][1]['filter']['ker_shape'],models[plot_num]['layers'][1]['activ']['min_out']);
                         do_plot(features1,variances1,counts1,features2,variances2,counts2,plot_num,vis);
-                        console.log(models[plot_num]['layers'][1]['filter']['ker_shape'],models[plot_num]['layers'][1]['activ']['min_out'])
+
                     });
-                    plot_num = 0;
+                    plot_num = 4;
+                    console.log("plotting model", plot_num,models[plot_num]['layers'][1]['filter']['ker_shape'],models[plot_num]['layers'][1]['activ']['min_out']);
                     do_plot(features1,variances1,counts1,features2,variances2,counts2,plot_num,vis);
     
                     
@@ -168,7 +172,7 @@
                 traditional:true,
                 success: function(result){
                     var vis = d3.select("#box2").append("svg:svg").attr('id',"plot2").attr("width", w).attr("height", h).attr('style','padding-left:100px;padding-top:100px')
-                    plot_num = 9;
+                    plot_num = 4;
                     sucfunc(result,vis,plot_num,'plot2')
                     
                     $('#plot2').click(function(){

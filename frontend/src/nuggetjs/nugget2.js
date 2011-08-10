@@ -56,14 +56,15 @@
                        cdata[b[0]][c].push(elt["test_accuracy"]);
                    });
                    var sar;
+                   var statfunc = max;
                    var data_array = _.map(tasks,function(elt){                   
 					   return {cat1 : elt.split('/')[0],
 					           cat2 : elt.split('/')[1],
-						       trans : mean(cdata[elt]['trans']),
-						       inrot : mean(cdata[elt]['inrot']),
-						       mixed : mean(cdata[elt]['trans mixed']),
-						       rot_delta : mean(cdata[elt]['trans']) - mean(cdata[elt]['inrot']),
-						       mix_delta : mean(cdata[elt]['trans']) - mean(cdata[elt]['trans mixed']),
+						       trans : statfunc(cdata[elt]['trans']),
+						       inrot : statfunc(cdata[elt]['inrot']),
+						       mixed : statfunc(cdata[elt]['trans mixed']),
+						       rot_delta : statfunc(cdata[elt]['trans']) - statfunc(cdata[elt]['inrot']),
+						       mix_delta : statfunc(cdata[elt]['trans']) - statfunc(cdata[elt]['trans mixed']),
 						       id : elt}
 					});       
                    var grid;
