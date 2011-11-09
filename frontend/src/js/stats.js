@@ -7,6 +7,7 @@ function sum(arr){
 	return _.reduce(arr, function(memo, num){ return memo + num; }, 0);
 };
 
+
 function mean(arr){
 	return sum(arr)/arr.length;
 };
