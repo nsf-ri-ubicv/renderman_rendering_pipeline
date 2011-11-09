@@ -70,7 +70,25 @@ def create_mongodb(depends_on = '../ModelBankLibrary.db', creates = '../certific
     for x in X:
         rec = {'id':x['ID'],'name':x['ID'],'keywords':['womens clothing','clothing'],'type':'dosch'}
         coll.insert(rec)           
-        
+
+
+    KD = {'flowers':['flowers','plants'],
+          'electronics':['electronics'],
+          'buildings':['buildings'],
+          'household_aids':['household aids','kitchen equipment','appliances'],
+          'home_appliances':['home appliances'],
+          'jewelry':['jewelry'],
+          'job_poses':['human','people','person','body'],
+          'music_instruments':['music','instrument','musical instrument'],
+          'tools':['tools','hardware','construction tools'],
+          'trees':['trees','plants']}
+
+    for k in KD:
+        X = tb.tabarray(SVfile = '../model_manifests/' + k + '.csv')
+        for x in X:
+            rec = {'id':x['ID'],'name':x['ID'],'keywords':KD[k],'type':'dosch','filepath':x['ID'] + '.png'}
+            coll.insert(rec)
+                                
     createCertificate(creates,'made it')
 
 from canonical_angles import ANGLES
