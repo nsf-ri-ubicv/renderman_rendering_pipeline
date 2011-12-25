@@ -6,4 +6,4 @@ export LD_LIBRARY_PATH=/opt/boost_1_43/lib
 
 source /usr/local/3delight-9.0.97/.3delight_bash 
 
-export PYTHONPATH=/home/render/renderman_rendering_pipeline:/home/tools/centos5_cpu/scikit-data:/home/tools/centos5_cpu/MonteTheano:/home/tools/centos5_cpu/hyperopt:/home/extractor/hyperopt_cvpr2012/
+export PYTHONPATH=/home/tools/centos5_cpu/MonteTheano:/home/tools/centos5_cpu/hyperopt:/home/extractor/hyperopt_cvpr2012/
