@@ -1,0 +1,14 @@
+
+tools
+	tabular
+	starflow
+	beautifulsoup
+	pymongo
+
+nginx.conf
+
+mongo.conf
+
+put .boto in right place 
+
+run construct_images

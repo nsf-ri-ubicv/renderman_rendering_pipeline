@@ -1,0 +1,9 @@
+export EDITOR=emacs
+
+export PATH=/usr/local/cuda/bin:/usr/local/cuda/computeprof/bin:/usr/local/cuda/open64/bin:/opt/bin:$PATH:/home/tools/centos5_cpu/scikit-data/bin/:/home/tools/centos5_cpu/MonteTheano/bin:/home/tools/centos5_cpu/hyperopt/bin
+
+export LD_LIBRARY_PATH=/opt/boost_1_43/lib
+
+source /usr/local/3delight-9.0.97/.3delight_bash 
+
+export PYTHONPATH=/home/render/renderman_rendering_pipeline:/home/tools/centos5_cpu/scikit-data:/home/tools/centos5_cpu/MonteTheano:/home/tools/centos5_cpu/hyperopt:/home/extractor/hyperopt_cvpr2012/

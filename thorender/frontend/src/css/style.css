@@ -1,0 +1,222 @@
+/*@mixin inline-list {
+  list-style-type: none;
+  &, & li {
+	margin: 0px;
+	padding: 0px;
+	display: inline; } }*/
+/*@mixin round($tl, $tr, $br, $bl) {
+  -moz-border-radius: {
+	topleft: #{$tl}px;
+	topright: #{$tr}px;
+	bottomright: #{$br}px;
+	bottomleft: #{$bl}px; };
+  -webkit-border: {
+	top-left-radius: #{$tl}px;
+	top-right-radius: #{$tr}px;
+	bottom-right-radius: #{$br}px;
+	bottom-left-radius: #{$bl}px; };
+  border: {
+	top-left-radius: #{$tl}px;
+	top-right-radius: #{$tr}px;
+	bottom-right-radius: #{$br}px;
+	bottom-left-radius: #{$bl}px; }; }
+
+@mixin vertical-gradiant($start, $end) {
+  background-image: -webkit-gradient(linear, 0% 10%, 0% 90%, from($start), to($end));
+  background-image: -moz-linear-gradient(0% 100% 90deg, $start, $end); }*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  font-family: inherit;
+  vertical-align: baseline; }
+
+*:focus {
+  outline: 0; }
+
+body {
+  line-height: 1;
+  color: black;
+  background: white; }
+
+ol, ul {
+  list-style: none; }
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  vertical-align: middle; }
+
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle; }
+
+q, blockquote {
+  quotes: "" ""; }
+  q:before, q:after, blockquote:before, blockquote:after {
+    content: ""; }
+
+a img {
+  border: none; }
+
+body {
+  background-color: #fdfdfd;
+  font-family: "liberation-serif-1", "liberation-serif-2"; }
+
+#chooser {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background-color: gray;
+  position: fixed;
+  width: 100%; }
+
+#outer {
+  padding-top: 45px; }
+
+#content {
+  float: left;
+  width: 900px; }
+
+.var_box {
+  padding: 3px; }
+
+.var_box input {
+  width: 100px; }
+
+.selected_model_box {
+  padding-top: 5px;
+  padding-bottom: 5px; }
+
+.model_box {
+  float: left;
+  padding: 10px; }
+
+.choose_item {
+  float: left;
+  padding: 5px;
+  padding-right: 10px; }
+
+#chooseByTag {
+  float: left;
+  padding-right: 5px;
+  padding-left: 5px; }
+
+#chooseByName {
+  padding-right: 5px;
+  padding-left: 5px; }
+
+#params {
+  padding: 10px;
+  outline: #00FF00 dotted thick; }
+
+#right {
+  padding-top: 5px;
+  float: right;
+  width: 200px; }
+
+#searchbar {
+  position: fixed;
+  width: 100%;
+  top: 45px;
+  height: 30px;
+  padding-right: 10px;
+  padding-top: 10px;
+  background-color: #F0F0F0;
+  z-index: 150; }
+
+#searchbar {
+  padding-left: 10px; }
+
+#searchbar input {
+  float: right; }
+
+#main {
+  width: 1150px;
+  padding-top: 45px; }
+
+#header {
+  height: 45px;
+  width: 100%;
+  color: #FFF;
+  position: fixed;
+  background: #333;
+  z-index: 200;
+  top: 0px; }
+
+.nugget {
+  font-size: 10px;
+  padding: 20px; }
+
+.innernugget {
+  padding: 5px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  width: 820px;
+  border-width: 3px;
+  border-style: solid;
+  background-color: #FFF5EE; }
+
+.nuggetheader {
+  font-size: 20px; }
+
+.nuggettext {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 14px;
+  line-height: 2; }
+
+.nuggetplot {
+  padding-left: 100px;
+  padding-top: 10px;
+  padding-top: 10px; }
+
+#intro {
+  padding: 20px;
+  font-size: 20px;
+  font-weight: bold; }
+
+.variables {
+  border-width: thin;
+  border-style: solid;
+  height: 260px; }
+
+.selected_model {
+  padding-bottom: 10px; }
+
+#header ul {
+  padding: 7px; }
+
+#header ul {
+  float: left; }
+
+#header ul li {
+  padding: 0 10px;
+  float: left; }
+
+#header a {
+  text-decoration: none;
+  color: #DDD; }
+
+#header a:hover {
+  color: #FFF; }
+
+#header a:hover {
+  text-decoration: overline; }
+
+#logotext {
+  font-size: 30px;
+  color: white;
+  font-family: "liberation-serif-1", "liberation-serif-2"; }
