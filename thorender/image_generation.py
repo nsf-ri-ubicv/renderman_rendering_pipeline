@@ -150,6 +150,8 @@ class config_gen(object):
     def next(self):
         ind,x = self.param_list.next()
         x['image']['generator'] = self.im_configs[ind]['generator']
+        self.im_configs[ind].has_key('label'):
+            x['image']['label'] = self.im_configs[ind]['label']
         return x
             
         
@@ -202,7 +204,6 @@ def renderman_config_gen(args):
         funcs.append(('bg_phi',random_ranger(args['bg_phi'])))
     if 'bg_psi' in args:
         funcs.append(('bg_psi',random_ranger(args['bg_psi'])))
-        
         
         
     for param in params:
