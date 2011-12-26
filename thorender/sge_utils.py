@@ -70,6 +70,6 @@ call_script_template = """#!/bin/bash
 #$$ -cwd
 #$$ -S /bin/bash
 
-$PYEXEC -c "import $MODNAME, sge_utils; sge_utils.callfunc($MODNAME.$FNNAME,'$ARGFILE')"
+$PYEXEC -c "import $MODNAME, thorender.sge_utils; thorender.sge_utils.callfunc($MODNAME.$FNNAME,'$ARGFILE')"
 
 """
