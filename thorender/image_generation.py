@@ -92,9 +92,10 @@ def image_protocol(config_path, write=False, parallel=False):
     config_gen = get_config(config_path) 
     im_hash = image_protocol_hash(config_path)
     if parallel:
-        return generate_images_parallel(im_hash, config_gen)
+        func = generate_images_parallel
     else:
-        return generate_images(im_hash, config_gen)
+        func = generate_images
+    return func(im_hash, config_gen), im_hash
 
 
 def remove_existing(coll,fs, hash):
