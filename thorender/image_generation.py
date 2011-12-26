@@ -54,7 +54,7 @@ def generate_and_insert_single_image(x,im_hash):
     im_fs.put(image_string,**y)
 
    
-def generate_images_parallel(im_hash,config_gen):
+def generate_images_parallel(im_hash, config_gen):
     conn = pm.Connection(document_class = SON)
     db = conn[DB_NAME]
     im_coll = db['images.files']
@@ -68,26 +68,27 @@ def generate_images_parallel(im_hash,config_gen):
         jobids.append(jobid)
 
     return {'child_jobs':jobids}
+
     
 def image_protocol_hash(config_path):
     config = get_config(config_path)
     image_hash = get_config_string(config['images'])
     return image_hash
+
     
-def image_protocol(config_path,write = False,parallel=False):
+def image_protocol(config_path, write=False, parallel=False):
     config_gen = get_config(config_path) 
     image_hash = image_protocol_hash(config_path)
     if parallel:
-        return generate_images_parrallel(im_hash, config_gen)
+        return generate_images_parallel(im_hash, config_gen)
     else:
         return generate_images(im_hash, config_gen)
+
 
 def remove_existing(coll,fs, hash):
     existing = coll.find({'__hash__':hash})
     for e in existing:
         fs.delete(e['_id'])
-
-
 
 
 BASE_URL = 'http://50.19.109.25'
