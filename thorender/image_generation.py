@@ -50,6 +50,7 @@ def generate_images(im_hash,config_gen, remove=False):
         y['filename'] = filename
         y['__hash__'] = im_hash
         im_fs.put(image_string,**y)
+    return None, IC
     
 
 def generate_and_insert_single_image(x,im_hash):
@@ -79,7 +80,7 @@ def generate_images_parallel(im_hash, config_gen, remove=False):
                      opstring='-pe orte 2 -l qname=q -o /home/render/image_jobs -e /home/render/image_jobs')  
         jobids.append(jobid)
 
-    return {'child_jobs':jobids}
+    return {'child_jobs':jobids}, IC
 
     
 def image_protocol_hash(config_path):
