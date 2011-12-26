@@ -77,7 +77,7 @@ def generate_images_parallel(im_hash, config_gen, remove=False):
     jobids = []
     for (i,x) in enumerate(IC.configs):
         jobid = qsub(generate_and_insert_single_image,(x,im_hash),
-                     opstring='-pe orte 2 -l qname=q -o /home/render/image_jobs -e /home/render/image_jobs')  
+                     opstring='-pe orte 2 -l qname=rendering.q -o /home/render/image_jobs -e /home/render/image_jobs')  
         jobids.append(jobid)
 
     return {'child_jobs':jobids}, IC
