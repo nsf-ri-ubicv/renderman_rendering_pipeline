@@ -4,14 +4,22 @@ import itertools
 import random
 import urllib
 import json
+import hashlib
 
 import numpy as np
-
+import gridfs
 import pymongo as pm
-import renderer
 from bson import SON
 
+import renderer
 from sge_utils import qsub
+
+
+BASE_URL = 'http://50.19.109.25'
+MODEL_URL = BASE_URL + ':9999/3dmodels?'
+BG_URL =  BASE_URL + ':9999/backgrounds?'
+DB_NAME = 'thor'
+
 
 def get_config(config_fname):
     config_path = os.path.abspath(config_fname)
@@ -20,26 +28,29 @@ def get_config(config_fname):
     execfile(config_path, {},config)
     return config['config']
     
+    
 def get_config_string(configs):
     return hashlib.sha1(repr(configs)).hexdigest()
     
-def generate_images(im_hash,config_gen):
+    
+def generate_images(im_hash,config_gen, remove=False):
     conn = pm.Connection(document_class = SON)
     db = conn[DB_NAME]
     im_coll = db['images.files']
     im_fs = gridfs.GridFS(db,'images')
-    remove_existing(im_coll,im_fs,im_hash)
+    if remove:
+        remove_existing(im_coll,im_fs,im_hash)
     IC = ImageConfigs(config_gen)
     for (i,x) in enumerate(IC.configs):
         if (i/100)*100 == i:
             print(i,x)       
-        image_string = open(x['image'].pop('img_fullpath')).read()
+        image_string = IC.render_image(x['image'])
         y = SON([('config',x)])
-        filename = get_filename(x)
+        filename = get_config_string(x)
         y['filename'] = filename
         y['__hash__'] = im_hash
         im_fs.put(image_string,**y)
- 
+    
 
 def generate_and_insert_single_image(x,im_hash):
     conn = pm.Connection(document_class = SON)
@@ -48,18 +59,19 @@ def generate_and_insert_single_image(x,im_hash):
     im_fs = gridfs.GridFS(db,'images')
     image_string = render_image(None,x['image']) 
     y = SON([('config',x)])
-    filename = get_filename(x)
+    filename = get_config_string(x)
     y['filename'] = filename
     y['__hash__'] = im_hash
     im_fs.put(image_string,**y)
 
    
-def generate_images_parallel(im_hash, config_gen):
+def generate_images_parallel(im_hash, config_gen, remove=False):
     conn = pm.Connection(document_class = SON)
     db = conn[DB_NAME]
     im_coll = db['images.files']
     im_fs = gridfs.GridFS(db,'images')
-    remove_existing(im_coll,im_fs,im_hash)
+    if remove:
+        remove_existing(im_coll,im_fs,im_hash)
     IC = ImageConfigs(config_gen)
     jobids = []
     for (i,x) in enumerate(IC.configs):
@@ -78,7 +90,7 @@ def image_protocol_hash(config_path):
     
 def image_protocol(config_path, write=False, parallel=False):
     config_gen = get_config(config_path) 
-    image_hash = image_protocol_hash(config_path)
+    im_hash = image_protocol_hash(config_path)
     if parallel:
         return generate_images_parallel(im_hash, config_gen)
     else:
@@ -90,10 +102,6 @@ def remove_existing(coll,fs, hash):
     for e in existing:
         fs.delete(e['_id'])
 
-
-BASE_URL = 'http://50.19.109.25'
-MODEL_URL = BASE_URL + ':9999/3dmodels?'
-BG_URL =  BASE_URL + ':9999/backgrounds?'
 
 def render_image(IC,config,returnfh=False):
     generator = config['generator']

@@ -3,7 +3,7 @@ from math import pi
 from starflow.utils import ListUnion
 
 from bson import SON
-from model_categories import MODEL_CATEGORIES
+from thorender.model_categories import MODEL_CATEGORIES
 
 MODELS = ListUnion(MODEL_CATEGORIES.values())
 
