@@ -11,8 +11,6 @@ from string import Template
 import numpy as np
 import boto
 
-from starflow.utils import uniqify
-
 import scene_templates
 
 MODEL_DIR = 'MODELS'
@@ -52,6 +50,11 @@ def params_to_id(p):
 STRING_PATTERN = re.compile(' [\S]+.(jpg|JPG|bmp|BMP|tif|TIF|tiff|TIFF|png|PNG)')
 ad_pattern = re.compile(r"C:\\Program Files\\Autodesk\\3ds Max 2011\\maps\\([\S]+)")
 ad_pattern2 = re.compile(r"C:\\My 3D Models\\([\S]+)")
+
+
+def uniqify(l):
+    return [x for (i, x) in numerate(l) if x not in x[:i]]
+    
 
 def mtl_fixer(path,model_id,libpath):
     [dirpath,filename] = os.path.split(path)
