@@ -1,5 +1,8 @@
 import pymongo as pm
-import sqlite3
+try:
+    import sqlite3
+except:
+    from pysqlite2 import dbapi2 as sqlite3
 import os
 from utils import createCertificate
 import boto
@@ -14,12 +17,12 @@ def get_modeldb(creates='../ModelBankLibrary.db'):
     k.get_contents_to_filename(creates)
     
     
-def create_mongodb(depends_on = '../ModelBankLibrary.db', creates = '../certificate.txt'):
+def create_mongodb(host, port):
     conn = sqlite3.connect('../ModelBankLibrary.db')
     c = conn.cursor()
     c.execute('select * from products;')
     
-    conn = pm.Connection()
+    conn = pm.Connection(host, port)
     db = conn['dicarlocox_3dmodels']
     db.drop_collection('3ds_test_images')
     coll = db['3ds_test_images']
@@ -76,7 +79,7 @@ def create_mongodb(depends_on = '../ModelBankLibrary.db', creates = '../certific
           'electronics':['electronics'],
           'buildings':['buildings'],
           'household_aids':['household aids','kitchen equipment','appliances'],
-          'home_appliances':['home appliances'],
+          #'home_appliances':['home appliances'],
           'jewelry':['jewelry'],
           'job_poses':['human','people','person','body'],
           'music_instruments':['music','instrument','musical instrument'],
@@ -89,11 +92,10 @@ def create_mongodb(depends_on = '../ModelBankLibrary.db', creates = '../certific
             rec = {'id':x['ID'],'name':x['ID'],'keywords':KD[k],'type':'dosch','filepath':x['ID'] + '.png'}
             coll.insert(rec)
                                 
-    createCertificate(creates,'made it')
 
 from canonical_angles import ANGLES
-def add_canonical_angles():
-    conn = pm.Connection()
+def add_canonical_angles(host, port):
+    conn = pm.Connection(host, port)
     db = conn['dicarlocox_3dmodels']
     coll = db['3ds_test_images']
 
@@ -103,9 +105,9 @@ def add_canonical_angles():
   
 import tabular as tb
 
-def make_background_db( creates = '../background_certificate.txt',depends_on=('../3d_hdr_backgrounds.csv','../2d_grayscale_backgrounds.csv')):
+def make_background_db(host, port, depends_on=('../3d_hdr_backgrounds.csv','../2d_grayscale_backgrounds.csv')):
 
-    conn = pm.Connection()
+    conn = pm.Connection(host, port)
     db = conn['dicarlocox_3dmodels']
     db.drop_collection('3d_spherical_backgrounds')   
     

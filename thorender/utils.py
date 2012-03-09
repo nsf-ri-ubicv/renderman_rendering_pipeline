@@ -1,6 +1,6 @@
 import random
 import cPickle
-from starflow.utils import activate
+
 
 def createCertificate(path,msg,tol=10000000000):
     F = open(path,'w')
@@ -13,7 +13,6 @@ def createCertificateDict(path,d,tol=10000000000):
     cPickle.dump(d,F)
     F.close()
     
-    
-@activate(lambda x : x[0],lambda x : x[1])
+
 def wget(getpath,savepath,opstring=''):
     os.system('wget ' + opstring + ' "' + getpath + '" -O "' + savepath + '"')
