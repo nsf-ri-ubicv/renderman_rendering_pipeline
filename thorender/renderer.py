@@ -53,7 +53,7 @@ ad_pattern2 = re.compile(r"C:\\My 3D Models\\([\S]+)")
 
 
 def uniqify(l):
-    return [x for (i, x) in numerate(l) if x not in x[:i]]
+    return [x for (i, x) in enumerate(l) if x not in l[:i]]
     
 
 def mtl_fixer(path,model_id,libpath):
@@ -67,7 +67,7 @@ def mtl_fixer(path,model_id,libpath):
             F = F.replace(d,d.split('\\')[-1].split('/')[-1])
         D = uniqify([x.group() for x in ad_pattern2.finditer(F)])
         for d in D:
-            F = F.replace(d,d.split('\\')[-1].split('/')[-1])   
+            F = F.replace(d,d.split('\\')[-1].split('/')[-1])  
         D = uniqify([x.group() for x in STRING_PATTERN.finditer(F)])
         for d in D:
             d = d.strip()
@@ -219,7 +219,7 @@ def render_single_image(mbucket,
         os.makedirs(BG_DIR)
             
     for p in model_params:
-        assert 'model_id' in p
+        assert 'model_id' in p, p.keys()
         p['tx'] = p.get('tx', TX_DEFAULT)
         p['ty'] = p.get('ty', TY_DEFAULT)
         p['tz'] = p.get('tz', TZ_DEFAULT)

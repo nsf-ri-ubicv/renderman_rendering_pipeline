@@ -1,6 +1,17 @@
 SCENE_SETUP = """
 import numpy
 import cgkit.ri as ri
+try:
+    from collections import OrderedDict
+except ImportError:
+    print "Python 2.7+ OrderedDict collection not available"
+    try:
+        from ordereddict import OrderedDict
+        logger.warn("Using backported OrderedDict implementation")
+    except ImportError:
+        raise ImportError("Backported OrderedDict implementation "
+                          "not available. To install it: "
+                          "'pip install -vUI ordereddict'")
 
 
 Globals(

@@ -5,6 +5,18 @@ import random
 import urllib
 import json
 import hashlib
+try:
+    from collections import OrderedDict
+except ImportError:
+    print "Python 2.7+ OrderedDict collection not available"
+    try:
+        from ordereddict import OrderedDict
+        logger.warn("Using backported OrderedDict implementation")
+    except ImportError:
+        raise ImportError("Backported OrderedDict implementation "
+                          "not available. To install it: "
+                          "'pip install -vUI ordereddict'")
+
 
 import numpy as np
 import gridfs
@@ -29,12 +41,12 @@ def get_config(config_fname):
     return config['config']
     
     
-def get_config_string(configs):
+def get_hex_string(configs):
     return hashlib.sha1(repr(configs)).hexdigest()
     
     
 def generate_images(im_hash,config_gen, remove=False):
-    conn = pm.Connection(document_class = SON)
+    conn = pm.Connection(document_class=OrderedDict)
     db = conn[DB_NAME]
     im_coll = db['images.files']
     im_fs = gridfs.GridFS(db,'images')
@@ -45,60 +57,14 @@ def generate_images(im_hash,config_gen, remove=False):
         if (i/100)*100 == i:
             print(i,x)       
         image_string = IC.render_image(x['image'])
-        y = SON([('config',x)])
-        filename = get_config_string(x)
+        y = OrderedDict([('config',x)])
+        filename = get_hex_string(x)
         y['filename'] = filename
         y['__hash__'] = im_hash
         im_fs.put(image_string,**y)
     return None, IC
     
-
-def generate_and_insert_single_image(x,im_hash):
-    conn = pm.Connection(document_class = SON)
-    db = conn[DB_NAME]
-    im_coll = db['images.files']
-    im_fs = gridfs.GridFS(db,'images')
-    image_string = render_image(None,x['image']) 
-    y = SON([('config',x)])
-    filename = get_config_string(x)
-    y['filename'] = filename
-    y['__hash__'] = im_hash
-    im_fs.put(image_string,**y)
-
    
-def generate_images_parallel(im_hash, config_gen, remove=False):
-    conn = pm.Connection(document_class = SON)
-    db = conn[DB_NAME]
-    im_coll = db['images.files']
-    im_fs = gridfs.GridFS(db,'images')
-    if remove:
-        remove_existing(im_coll,im_fs,im_hash)
-    IC = ImageConfigs(config_gen)
-    jobids = []
-    for (i,x) in enumerate(IC.configs):
-        jobid = qsub(generate_and_insert_single_image,(x,im_hash),
-                     opstring='-pe orte 2 -l qname=rendering.q -o /home/render/image_jobs -e /home/render/image_jobs')  
-        jobids.append(jobid)
-
-    return {'child_jobs':jobids}, IC
-
-    
-def image_protocol_hash(config_path):
-    config = get_config(config_path)
-    image_hash = get_config_string(config['images'])
-    return image_hash
-
-    
-def image_protocol(config_path, write=False, parallel=False, remove=False):
-    config_gen = get_config(config_path) 
-    im_hash = image_protocol_hash(config_path)
-    if parallel:
-        func = generate_images_parallel
-    else:
-        func = generate_images
-    return func(im_hash, config_gen, remove=remove), im_hash
-
-
 def remove_existing(coll,fs, hash):
     existing = coll.find({'__hash__':hash})
     for e in existing:
@@ -148,16 +114,16 @@ class config_gen(object):
         return self
         
     def next(self):
-        ind,x = self.param_list.next()
+        ind, x = self.param_list.next()
         x['image']['generator'] = self.im_configs[ind]['generator']
-        self.im_configs[ind].has_key('label'):
+        if self.im_configs[ind].has_key('label'):
             x['image']['label'] = self.im_configs[ind]['label']
         return x
             
         
 def specific_config_gen(IC,config):
     images = config['specs']
-    return [SON([('image',m)]) for m in images]  
+    return [OrderedDict([('image',m)]) for m in images]  
     
 def random_config_gen(IC,config):
     if config['generator'] == 'renderman':
@@ -184,7 +150,7 @@ def renderman_config_gen(args):
 
     param_names = ['tx','ty','tz','rxy','rxz','ryz','sx','sy','sz','kenv','model_id']
     ranges = [tx,ty,tz,rxy,rxz,ryz,sx,sy,sz,kenv,model_ids]
-    params = [SON([('image' , SON(filter(lambda x: x[1] is not None, zip(param_names,p))))]) for p in itertools.product(*ranges)]  
+    params = [OrderedDict([('image' , OrderedDict(filter(lambda x: x[1] is not None, zip(param_names,p))))]) for p in itertools.product(*ranges)]  
 
 
     chooser = lambda v : (lambda : v[random.randint(0,len(v)-1)])    
@@ -220,7 +186,10 @@ def renderman_config_gen(args):
     
 
 def renderman_random_config_gen(args):
-    chooser = lambda v : (lambda : v[random.randint(0,len(v)-1)])    
+    seed = args.get('seed', 0)
+    rng = np.random.RandomState(seed)
+
+    chooser = lambda v : (lambda : v[rng.randint(0,len(v))])    
     ranger = lambda v : (((chooser(np.arange(v['$gt'],v['$lt'],v['delta'])) if v.get('delta') else (lambda : (v['$lt'] - v['$gt']) * random.random() + v['$gt'])))  if isinstance(v,dict) else v) if v else None
     num = args['num_images']
     funcs = [(k,ranger(args.get(k))) for k in ['tx','ty','tz','rxy','rxz','ryz','sx','sy','sz','s','bg_phi','bg_psi']]
@@ -244,7 +213,7 @@ def renderman_random_config_gen(args):
     
     params = []
     for i in range(num):
-        p = SON([])
+        p = OrderedDict([])
         if args.get('use_canonical'):
             p['use_canonical'] = args['use_canonical']    
         for (k,f) in funcs + funcs1:
@@ -253,7 +222,7 @@ def renderman_random_config_gen(args):
         if args.get('res'):
             p['res'] = args['res']
 
-        params.append(SON([('image',p)]))
+        params.append(OrderedDict([('image',p)]))
         
     return params
 
@@ -263,9 +232,8 @@ def get_canonical_view(m):
     if v.get('canonical_view'):
         return v['canonical_view']
     
-    
-def renderman_render(config,returnfh = False):
-    config = config.to_dict()
+
+def renderman_render(config, returnfh=False):
     
     params_list = [{}]
     param = params_list[0]
@@ -290,7 +258,7 @@ def renderman_render(config,returnfh = False):
     orig_dir = os.getcwd()
     os.chdir(os.path.join(os.environ['HOME'] , 'render_wd'))
     tmp = tempfile.mkdtemp()
-    renderer.render(tmp,params_list)
+    renderer.render(tmp, params_list)
     imagefile = [os.path.join(tmp,x) for x in os.listdir(tmp) if x.endswith('.tif')][0]
     os.chdir(orig_dir)
      
