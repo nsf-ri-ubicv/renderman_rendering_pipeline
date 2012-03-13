@@ -1,11 +1,10 @@
 from math import pi
-
-from starflow.utils import ListUnion
+import itertools
 
 from bson import SON
 from thorender.model_categories import MODEL_CATEGORIES
 
-MODELS = ListUnion(MODEL_CATEGORIES.values())
+MODELS = list(itertools.chain(*(MODEL_CATEGORIES.values())))
 
 NUM_IMAGES = 1000
 USE_CANONICAL = True

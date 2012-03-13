@@ -1,6 +1,7 @@
 tornado
 pymongo
 boto
-numpy>=1.3
+PIL
+#numpy
 nose>=1.0
-cgkit
+#cgkit
