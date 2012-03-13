@@ -14,7 +14,6 @@ MODEL_CATEGORIES = {'cars' : ['MB26897','MB28855','MB27827',
                                   'crocodile','gecko','iguana','leatherback',
                                   'terapin','tortoise','treefrog','salamander'],
 
-
                     'guns' : ['MB27069','MB27350','MB30684','MB28771',
                               'MB27860','MB27346','MB29066','MB29726',
                               'MB30472','MB30027','MB30680','MB26909'],
