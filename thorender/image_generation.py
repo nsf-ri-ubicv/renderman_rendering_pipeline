@@ -190,7 +190,7 @@ def renderman_random_config_gen(args):
     rng = np.random.RandomState(seed)
 
     chooser = lambda v : (lambda : v[rng.randint(0,len(v))])    
-    ranger = lambda v : (((chooser(np.arange(v['$gt'],v['$lt'],v['delta'])) if v.get('delta') else (lambda : (v['$lt'] - v['$gt']) * random.random() + v['$gt'])))  if isinstance(v,dict) else v) if v else None
+    ranger = lambda v : (((chooser(np.arange(v['$gt'],v['$lt'],v['delta'])) if v.get('delta') else (lambda : (v['$lt'] - v['$gt']) * random.random() + v['$gt'])))  if isinstance(v,dict) else lambda : v) if v else None
     num = args['num_images']
     funcs = [(k,ranger(args.get(k))) for k in ['tx','ty','tz','rxy','rxz','ryz','sx','sy','sz','s','bg_phi','bg_psi']]
 
