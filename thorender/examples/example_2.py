@@ -4,7 +4,7 @@ from math import pi
 from collections import OrderedDict
 
 MODEL_CATEGORIES = {'cars' : ['MB26897','MB28855','MB27827','MB28498',
-                              'MB28343','MB31083','MB31079','MB31620',
+                              'MB28343','MB29642', 'MB31079','MB31620',
                               'MB28490','MB31095'],
 
                     'cats_and_dogs' : ['shorthair_cat','leopard',
