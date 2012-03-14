@@ -1,4 +1,5 @@
 import os
+import copy
 import tempfile
 import itertools
 import random
@@ -234,7 +235,7 @@ def get_canonical_view(m):
     
 
 def renderman_render(config, returnfh=False):
-    
+    config = copy.deepcopy(config)
     params_list = [{}]
     param = params_list[0]
     if 'bg_id' in config:
