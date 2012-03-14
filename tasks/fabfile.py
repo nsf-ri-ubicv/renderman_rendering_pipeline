@@ -30,6 +30,7 @@ SLEEP_LIMIT = 1000
 def set_render_tasks(host, port, dbname, colname, key, config_gen_path):
     config_gen = get_config(config_gen_path)
     IC = ImageConfigs(config_gen)
+    port = int(port)
     conn = pm.Connection(host, port, document_class=OrderedDict)
     db = conn[dbname]
     coll = db[colname]
@@ -42,6 +43,7 @@ def set_render_tasks(host, port, dbname, colname, key, config_gen_path):
 
 
 def mongo_worker(host, port, dbname, colname, fsname, key):
+    port = int(port)
     conn = pm.Connection(host, port, document_class=OrderedDict)
     db = conn[dbname]
     coll = db[colname]
