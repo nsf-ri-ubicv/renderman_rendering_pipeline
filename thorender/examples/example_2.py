@@ -3,7 +3,7 @@ import copy
 from math import pi
 from collections import OrderedDict
 
-MODEL_CATEGORIES = {'cars' : ['MB26897','MB28855','MB27827','MB28498',
+MODEL_CATEGORIES = {'cars' : ['MB26897','MB28855','MB31518','MB28498',
                               'MB28343','MB29642', 'MB31079','MB31620',
                               'MB28490','MB31095'],
 
@@ -46,7 +46,7 @@ MODEL_CATEGORIES = {'cars' : ['MB26897','MB28855','MB27827','MB28498',
                                 'MB30150','MB31632','MB30370','MB30114',
                                 'MB30762','MB30814'],
 
-                    'buildings' : ['MB27471','MB28886','MB28807',
+                    'buildings' : ['MB27471','MB28886','MB30794',
                                    'MB29870','MB27835','MB31131',
                                    'MB29802', 'MB30810','MB28921',
                                    'MB28934']}
