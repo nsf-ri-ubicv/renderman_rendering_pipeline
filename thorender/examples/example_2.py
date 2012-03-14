@@ -9,7 +9,7 @@ MODEL_CATEGORIES = {'cars' : ['MB26897','MB28855','MB31518','MB28498',
 
                     'cats_and_dogs' : ['shorthair_cat','leopard',
                                        'lynx','oriental','panther',
-                                       'doberman', 'goldenretriever',
+                                       'doberman', 'schnauzer',
                                        'dalmatian', 'bloodhound','bullmastiff'],
 
                     'reptiles' : ['MB30418','MB29694', 'chameleon',
