@@ -247,13 +247,17 @@ def renderman_render(config, returnfh=False):
         param['kenv'] = config.pop('kenv')
     if 'res' in config:
         param['res_x'] = param['res_y'] = config['res']
-    use_canonical = config.pop('use_canonical',False)
-    if use_canonical:
-        v = get_canonical_view(config['model_id'])
-        if v:
-            config['rotations'] = [{'rxy':v['rxy'],'rxz':v['rxz'],'ryz':v['ryz']},
-                                   {'rxy':config.pop('rxy',0),'rxz':config.pop('rxz',0),'ryz':config.pop('ryz',0)}]
-    param['model_params'] = [config]   
+    
+    if config['model_id'] is not None:
+        use_canonical = config.pop('use_canonical',False)
+        if use_canonical:
+            v = get_canonical_view(config['model_id'])
+            if v:
+                config['rotations'] = [{'rxy':v['rxy'],'rxz':v['rxz'],'ryz':v['ryz']},
+                                       {'rxy':config.pop('rxy',0),'rxz':config.pop('rxz',0),'ryz':config.pop('ryz',0)}]
+        param['model_params'] = [config]   
+    else:
+        param['model_params'] = []
 
     orig_dir = os.getcwd()
     os.chdir(os.path.join(os.environ['HOME'] , 'render_wd'))
