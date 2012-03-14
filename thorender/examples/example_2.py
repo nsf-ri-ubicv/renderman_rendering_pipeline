@@ -74,6 +74,7 @@ just_models = [OrderedDict([('model_ids', m),
           
 just_backgrounds = OrderedDict([('model_ids',[None]),
                     ('num_images', 10 * NUM_IMAGES),
+                    ('seed', 0),
                     ('generator','renderman'),
                     ('selection','random'),
                     ('bg_query', OrderedDict([('type','3d hdr')])),
@@ -251,6 +252,7 @@ for m in image_bases:
     mc = copy.deepcopy(m)
     mc['label']['background'] = 'gray'
     mc['bg_ids'] = ['gray.tdl']
+    mc['seed'] = len(imagesets)
     imagesets.append(mc)
     
 #3d hdr backgrounds
@@ -260,6 +262,7 @@ for m in image_bases:
     mc['bg_query'] = OrderedDict([('type','3d hdr')])
     mc['bg_phi'] = OrderedDict([('$gt',-pi),('$lt',pi)])
     mc['bg_psi'] = OrderedDict([('$gt',-pi),('$lt',pi)])
+    mc['seed'] = len(imagesets)
     imagesets.append(mc)
 
 config = {'images' : imagesets + just_models + [just_backgrounds]
