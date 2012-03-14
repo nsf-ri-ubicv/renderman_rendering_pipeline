@@ -1,6 +1,8 @@
 import pymongo as pm
 import gridfs
 from celery.task import task
+from celery.task.sets import TaskSet
+
 try:
     from collections import OrderedDict
 except ImportError:
@@ -44,14 +46,22 @@ def set_render_tasks(host, port, dbname, colname, key, config_gen_path):
     IC = ImageConfigs(config_gen)
     hex_key = key + '_' + get_hex_string(config_gen)
     results = []
-    for config in IC.configs:
-        result = render_task.delay(config,
-                                   host,
-                                   port,
-                                   dbname,
-                                   colname, 
-                                   hex_key
-                                   )
-        results.append(result)
+    job = TaskSet(tasks=[render_task.subtask((config,
+                                       host,
+                                       port,
+                                       dbname,
+                                       colname,
+                                       hex_key)) for config in IC.configs])
+    results = job.apply_async()
+
+#    for config in IC.configs:
+#        result = render_task.delay(config,
+#                                   host,
+#                                   port,
+#                                   dbname,
+#                                   colname, 
+#                                   hex_key
+#                                   )
+#        results.append(result)
     return results, hex_key
     
